@@ -1,0 +1,211 @@
+{% extends "./base.html" %}
+
+{% block title %}Registro de Pacientes{% endblock %}
+{% block content %}
+<div class="content">
+    <header>
+        <div class="sidebar">
+            <a href="{{ url_for('bms') }}">INICIO</a>
+            <a href="{{ url_for('registroPacientes') }}">REGISTRO PACIENTE</a>
+            <a href="{{ url_for('citas') }}">CITAS</a>
+            <a href="{{ url_for('consultas') }}">CONSULTAS</a>
+            <a href="{{ url_for('tratamientos') }}">TRATAMIENTOS</a>        
+            <a href="{{ url_for('estadisticas') }}">ESTADISTICAS</a>
+            <a href="{{ url_for('login') }}">CERRAR SESION</a>
+        </div>
+    </header>
+
+    <div class="sectionForm">
+        <form action="{{ url_for('registroPacientes') }}" method="POST">
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <br>
+                    {% for message in messages %}
+                        <div role="alert" style="background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; padding: 10px; margin-bottom: 15px; border-radius: 5px;">
+                            <strong>
+                                {{ message }}
+                            </strong>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <br>
+
+            <h2>Datos Personales</h2>
+            <section class="formSection">    
+                <div class="nroHistoria">
+                    <label for="idPaciente">N° de historia</label>
+                    <input type="text" id="idPaciente" name="idPaciente_display" value="{{ next_id }}" style="text-align: center" disabled ><br><br>
+                </div>
+                <div>
+                    <label for="nombre">Nombre</label>
+                    <input type="text" name="nombre" placeholder="Nombre del Paciente" required><br><br>
+                </div>
+                <div>
+                    <label for="apellido">Apellido</label>
+                    <input type="text" name="apellido" placeholder="Apellido del Paciente" required><br><br>
+                </div>
+                <div>
+                    <label for="cedula">Nro de Cedula</label>
+                    <input type="number" name="nroCedula" placeholder="Numero de Cedula" required><br><br>
+                </div>
+                <div>
+                    <label for="genero" required>Género</label><br>
+                    <input type="radio" id="femenino" name="genero" value="Femenino" required>
+                    <label for="femenino">Femenino</label><br>
+                    <input type="radio" id="masculino" name="genero" value="Masculino">
+                    <label for="masculino">Masculino</label><br><br>
+                </div>
+                <div>
+                    <label for="fechaNacimiento">Fecha de Nacimiento</label>
+                    <input type="date" name="fechaNacimiento" placeholder="Fecha de Nacimiento" required><br><br>
+                </div>
+                <div>
+                    <label for="direccion">Direccion</label>
+                    <textarea name="direccion" placeholder="Ingrese la direccion del paciente" required></textarea><br>
+                </div>
+                <div>
+                    <label for="estCiv">Estado Civil</label><br>
+                    <input type="radio" id="soltero" name="estCiv" value="Soltero">
+                    <label for="soltero">Soltero/a</label><br>
+                    <input type="radio" id="casado" name="estCiv" value="Casado">
+                    <label for="casado">Casado</label><br>
+                    <input type="radio" id="casado" name="estCiv" value="Concubino">
+                    <label for="concubino">Concubino</label><br>
+                    <input type="radio" id="divorciado" name="estCiv" value="Divorciado">
+                    <label for="divorciado">Divorciado</label><br>
+                    <input type="radio" id="divorciado" name="estCiv" value="Viudo">
+                    <label for="viudo">Viudo</label><br>
+                </div>
+                <div>
+                    <label for="diagnostico">Diagnostico Inicial o Referencia</label>
+                    <textarea name="diagnostico" required></textarea><br>
+                </div>
+                <div>
+                    <label for="remision">Remitido por</label>
+                    <select id="remision" name="remision" required>
+                        <option value="">Selecciona un hospital</option>
+                        {% for nombreHospital in hospitales %}
+                        <option value="{{ nombreHospital[1] }}">{{ nombreHospital[1] }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div>
+                    <label for="elaborado">Elaborado por</label>
+                    <select id="elaborado" name="elaborado" required>
+                        <option value="">Selecciona un usuario</option>
+                        {% for usuario in usuarios %}
+                        <option value="{{ usuario[1] }}">{{ usuario[1] }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </section>
+
+            <br>
+
+            <h2>Enfermedades Infecciosas</h2>
+            <section class="formSection">       
+                <br>
+                <div>
+                    <label for="citomegalovirus_status">Citomegalovirus</label>
+                    <select name="citomegalovirus_status" id="citomegalovirus_status">
+                        <option value="">Seleccione una opcion</option>
+                        <option value="Activo">Activo</option>
+                        <option value="Inactivo">Inactivo</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="tuberculosis_status">Tuberculosis</label>
+                    <select name="tuberculosis_status" id="tuberculosis_status">
+                        <option value="">Seleccione una opcion</option>
+                        <option value="Activo">Activo</option>
+                        <option value="Inactivo">Inactivo</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="hepatitis_status">Hepatitis</label>
+                    <select name="hepatitis_status" id="hepatitis_status">
+                        <option value="">Seleccione una opcion</option>
+                        <option value="Activo">Activo</option>
+                        <option value="Inactivo">Inactivo</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="hepatitis_tipo">Hepatitis tipo</label>
+                    <input type="text" name="hepatitis_tipo">
+                </div>
+                <div>
+                    <label for="varicella_zoster_status">Virus Varicella Zoster</label>
+                    <select name="varicella_zoster_status" id="varicella_zoster_status">
+                        <option value="">Seleccione una opcion</option>
+                        <option value="Activo">Activo</option>
+                        <option value="Inactivo">Inactivo</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="vih_status">VIH</label>
+                    <select name="vih_status" id="vih_status">
+                        <option value="">Seleccione una opcion</option>
+                        <option value="Activo">Activo</option>
+                        <option value="Inactivo">Inactivo</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="otros_infecciosas_status">Otros</label>
+                    <select name="otros_infecciosas_status" id="otros_infecciosas_status">
+                        <option value="">Seleccione una opcion</option>
+                        <option value="Activo">Activo</option>
+                        <option value="Inactivo">Inactivo</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="especificar_otros_infecciosas">Especifique</label>
+                    <input type="text" name="especificar_otros_infecciosas">
+                </div>           
+            </section>
+
+            <br>
+
+            <h2>Antecedentes Personales Patologicos</h2>
+            <section class="formSection">
+                <br>
+                <div>
+                    <label for="alergia_medicamento_status">Alergia a algun medicamento</label>
+                    <select name="alergia_medicamento_status" id="alergia_medicamento_status">
+                        <option value="">Seleccione una opcion</option>
+                        <option value="Si">Si</option>
+                        <option value="No">No</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="especificar_alergia">Especifique</label>
+                    <input type="text" name="especificar_alergia" id="especificar_alergia">
+                </div>         
+                <div>
+                    <label for="diabetes_status">Diabetes</label>
+                    <select name="diabetes_status" id="diabetes_status">
+                        <option value="">Seleccione una opcion</option>
+                        <option value="Si">Si</option>
+                        <option value="No">No</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="hipertension_arterial_status">Hipertension Arterial</label>
+                    <select name="hipertension_arterial_status" id="hipertension_arterial_status">
+                        <option value="">Seleccione una opcion</option>
+                        <option value="Si">Si</option>
+                        <option value="No">No</option>
+                    </select>
+                </div>
+            </section>
+            <br>
+            <div class="botonesRegistro">
+                <button type="submit">REGISTRAR PACIENTE</button>
+                <button type="reset">BORRAR</button>
+            </div>
+        </form>
+    </div>
+    
+</div>
+{% endblock %}

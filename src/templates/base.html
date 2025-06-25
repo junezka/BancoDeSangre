@@ -1,0 +1,19 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock %} - BMS</title>
+    {% block customCSS %}
+    <link rel="stylesheet" href= "{{url_for('static', filename='css/styles.css')}}">
+    {% endblock %}
+</head> 
+  <div class="iconos">
+      <img src="{{url_for('static', filename='img/mpps.png')}}" alt="MPPS" width="30%">
+      <img src="{{url_for('static', filename='img/Logo.png')}}" alt="Logo" width="10%">
+  </div>  
+  <body>   
+    <div>{% block content %}{% endblock %}</div> 
+  </body>
+</html>

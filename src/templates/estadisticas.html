@@ -1,0 +1,18 @@
+{% extends "./base.html" %}
+
+{% block title %}Tratamientos{% endblock %}
+{% block content %}
+<div class="content">
+    <header>
+    <div class="sidebar">
+        <a href="{{ url_for('bms') }}">INICIO</a>
+        <a href="{{ url_for('registroPacientes') }}">REGISTRO PACIENTE</a>
+        <a href="{{ url_for('citas') }}">CITAS</a>
+        <a href="{{ url_for('consultas') }}">CONSULTAS</a>
+        <a href="{{ url_for('tratamientos') }}">TRATAMIENTOS</a>
+        <a href="{{ url_for('estadisticas') }}">ESTADISTICAS</a>
+        <a href="{{ url_for('login') }}">CERRAR SESION</a>
+    </div>
+</header>
+</div>
+{% endblock %}

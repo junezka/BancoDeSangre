@@ -1,0 +1,144 @@
+{% extends "./base.html" %}
+
+{% block title %}Consultas de Pacientes{% endblock %}
+{% block content %}
+
+<div class="content">
+    <header>
+        <div class="sidebar">
+            <a href="{{ url_for('bms') }}">INICIO</a>
+            <a href="{{ url_for('registroPacientes') }}">REGISTRO PACIENTE</a>
+            <a href="{{ url_for('citas') }}">CITAS</a>
+            <a href="{{ url_for('consultas') }}">CONSULTAS</a>
+            <a href="{{ url_for('tratamientos') }}">TRATAMIENTOS</a>
+            <a href="{{ url_for('estadisticas') }}">ESTADISTICAS</a>
+            <a href="{{ url_for('login') }}">CERRAR SESION</a>
+        </div>
+    </header>
+
+    <div class="sectionForm">
+        <h2>Buscar Paciente</h2>
+        <section>
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                <br>
+                {% for message in messages %}
+                    <div role="alert" style="background-color: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; padding: 10px; margin-bottom: 15px; border-radius: 5px;">
+                        <strong>{{ message }}</strong>
+                    </div>
+                {% endfor %}
+                {% endif %}
+            {% endwith %}
+            <form action="{{ url_for('consultas') }}" class="formRegistro" method="POST">
+
+                <br>
+                <div>
+                    <label for="busqueda">Buscar por N° de Historia o Cédula:</label>
+                    <input type="text" id="busqueda" name="busqueda" placeholder="Ingrese N° de Historia o Cédula" value="{{ request.args.get('busqueda', '') }}">
+                </div>
+                <br>
+                <button type="submit">Buscar</button>
+            </form>
+        </section>
+
+        {% if paciente_encontrado %}
+         <h2>Información del Paciente</h2>
+            <table class="listaPacienteTable">
+                <thead>
+                    <tr>
+                        <th>N° de Historia</th>
+                        <th>Nombre</th>
+                        <th>Apellido</th>
+                        <th>Nro de Cédula</th>
+                        <th>Género</th>
+                        <th>Fecha de Nacimiento</th>
+                        <th>Dirección</th>
+                        <th>Estado Civil</th>
+                        <th>Diagnóstico Inicial</th>
+                        <th>Remitido por</th>
+                        <th>Elaborado por</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{ paciente_encontrado[0] }}</td> {# idPaciente #}
+                        <td>{{ paciente_encontrado[1] }}</td> {# nombre #}
+                        <td>{{ paciente_encontrado[2] }}</td> {# apellido #}
+                        <td>{{ paciente_encontrado[3] }}</td> {# nroCedula #}
+                        <td>{{ paciente_encontrado[4] }}</td> {# genero #}
+                        <td>{{ paciente_encontrado[5] | default('N/A') }}</td> {# fechaNacimiento #}
+                        <td>{{ paciente_encontrado[6] | default('N/A') }}</td> {# direccion #}
+                        <td>{{ paciente_encontrado[7] | default('N/A') }}</td> {# estado_civil #}
+                        <td>{{ paciente_encontrado[8] | default('N/A') }}</td> {# diagnostico_inicial #}
+                        <td>{{ paciente_encontrado[9] | default('N/A') }}</td> {# remitido_por (this would be an ID, consider showing the name) #}
+                        <td>{{ paciente_encontrado[10] | default('N/A') }}</td> {# elaborado_por_id (this would be an ID, consider showing the name) #}
+                    </tr>
+                </tbody>
+            </table>
+            <table class="listaPacienteTable">
+            <h2>Enfermedades Infecciosas</h2>
+                <thead>
+                    <th>Citomegalovirus</th>
+                    <th>Tuberculosis</th>
+                    <th>Hepatitis</th>
+                    <th>Hepatitis tipo</th>
+                    <th>Virus Varicella</th>
+                    <th>VIH</th>
+                    <th>Otros</th>
+                    <th>Especifique</th>
+                </thead>
+                <tbody>
+                    <td>{{ paciente_encontrado[11] | default('N/A') }}</td>
+                    <td>{{ paciente_encontrado[12] | default('N/A') }}</td>
+                    <td>{{ paciente_encontrado[13] | default('N/A') }}</td>
+                    <td>{{ paciente_encontrado[14] | default('N/A') }}</td>
+                    <td>{{ paciente_encontrado[15] | default('N/A') }}</td>
+                    <td>{{ paciente_encontrado[16] | default('N/A') }}</td>
+                    <td>{{ paciente_encontrado[17] | default('N/A') }}</td>
+                    <td>{{ paciente_encontrado[18] | default('N/A') }}</td>
+                </tbody>
+            </table>
+            <table class="listaPacienteTable">
+            <h2>Antecedentes Personales Patologicos</h2>
+                <thead>
+                    <th>Alergia a algun medicamento</th>
+                    <th>Especifique</th>
+                    <th>Diabetes</th>
+                    <th>hipertension arterial</th>
+                </thead>
+                <tbody>
+                    <td>{{ paciente_encontrado[19] | default('N/A') }}</td>
+                    <td>{{ paciente_encontrado[20] | default('N/A') }}</td>
+                    <td>{{ paciente_encontrado[21] | default('N/A') }}</t>
+                    <td>{{ paciente_encontrado[22] | default('N/A') }}</td>
+                </tbody>
+            </table>
+                <hr> <h3>Historial de Tratamientos</h3>
+                {% if historial_tratamientos %}
+                    <table class="listaPacienteTable">
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Recibe Tratamiento</th>
+                                <th>Especificación</th>
+                                <th>Medicación</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for tratamiento in historial_tratamientos %}
+                            <tr>
+                                <td>{{ tratamiento[4] }}</td>
+                                <td>{{ tratamiento[2] }}</td>
+                                <td>{{ tratamiento[3] }}</td>
+                                <td>{{ tratamiento[5] }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <p>No hay tratamientos registrados para este paciente.</p>
+                {% endif %}
+                    
+            {% endif %}
+    </div>
+{% endblock %}

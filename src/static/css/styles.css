@@ -1,0 +1,156 @@
+html{
+  background-image: linear-gradient(rgb(0, 217, 255),white);
+  background-attachment: fixed;
+  background-size: cover;
+  height: 100vh;
+  margin: 0 auto; 
+  max-width: 1200px;
+  font-family: Arial, Helvetica, sans-serif;
+}
+.iconos {
+  display: flex;
+  justify-content: space-between;
+  width: 100%; 
+  height: 0 auto;
+  margin: 0 auto; 
+  max-width: 1200px;
+  text-align: center;
+}
+h1{
+  font-size: 4vw;
+  text-align: center;
+}
+h6{
+  padding: 5px;
+  text-align: center;
+}
+label{
+  padding-bottom: 10px;
+}
+
+.titulo{
+  font-size: 3vw;
+  text-align: right;
+}
+button{
+  border: 10% solid #ccc;
+  border-radius: 4px;
+}
+
+.centro{
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); /* Ajusta la posición */
+  background-color: rgba(255, 255, 255, 0.432); /* Solo para visualización */
+  padding: 15px; /* Espaciado interno */
+}
+
+.listaInicio{
+  flex-grow: 1;
+  padding: 20px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 20px;
+}
+section{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.listaPaciente {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 15px; /* Espaciado interno */
+  border: 1px solid black;
+  border-radius: 5px ;
+  box-shadow: 0 10px 10px rgba(0, 0, 0, 0.1);
+}
+.listaPacienteTable, thead{
+  text-align: center;
+  padding: 15px; /* Espaciado interno */
+  border: 1px solid black;
+  border-radius: 5px ;
+}
+form{
+  padding: 20px; /* Espaciado interno */
+  text-align: center;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+  background-color: rgba(255, 255, 255, 0.432); 
+}
+
+.contenedor-pos {
+  height: 100vh; /* Altura del contenedor */
+}
+.formRegistro {
+  justify-content: center;
+  text-align: center;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-gap: 20px;
+  padding: 20px;
+  background-color: rgba(255, 255, 255, 0.432); 
+}
+.sectionForm{
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10%;
+}
+.formSection{
+  justify-content: center;
+  text-align: center;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-gap: 20px;
+  padding: 20px;
+  background-color: rgba(255, 255, 255, 0.432); 
+}
+
+textarea {
+  width: 100%;
+  height: 100px; /* Altura del textarea */
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-family: Arial, Helvetica, sans-serif;
+}
+.botonesRegistro{
+  display: flex;
+  justify-content: space-evenly;
+}
+.nroHistoria{
+  justify-content: left;
+  margin-left: 0 auto;
+}
+.sidebar {
+  background-color: #f0f0f069; /* Color de fondo semitransparente */
+  padding: 20px;
+  width: 200px;
+}
+
+.sidebar a {
+  display: block;
+  margin-bottom: 10px;
+  text-decoration: none;
+  color: black;
+  transition: background-color 0.3s, color 0.3s, transform 0.3s, text-shadow 0.3s;
+}
+
+.sidebar a:hover {
+  background-color: darkblue;
+  color: white; 
+  transform: scale(1.2); 
+  text-shadow: 2px 2px 5px gray; 
+}
+.content {
+  display: flex;
+  text-align: center;
+}
+.container{
+  padding: 20px;
+}
