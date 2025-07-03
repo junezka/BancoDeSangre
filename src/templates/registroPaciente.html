@@ -2,16 +2,18 @@
 
 {% block title %}Registro de Pacientes{% endblock %}
 {% block content %}
-<div class="content">
+<div>
     <header>
         <div class="sidebar">
-            <a href="{{ url_for('bms') }}">INICIO</a>
-            <a href="{{ url_for('registroPacientes') }}">REGISTRO PACIENTE</a>
-            <a href="{{ url_for('citas') }}">CITAS</a>
-            <a href="{{ url_for('consultas') }}">CONSULTAS</a>
-            <a href="{{ url_for('tratamientos') }}">TRATAMIENTOS</a>        
-            <a href="{{ url_for('estadisticas') }}">ESTADISTICAS</a>
-            <a href="{{ url_for('login') }}">CERRAR SESION</a>
+        <a href="{{ url_for('bms') }}">INICIO</a>
+        <a href="{{ url_for('registroPacientes') }}">REGISTRO PACIENTE</a>
+        <a href="{{ url_for('citas') }}">CITAS</a>
+        <a href="{{ url_for('consultas') }}">CONSULTAS</a>
+        <a href="{{ url_for('tratamientos') }}">TRATAMIENTOS</a>
+        <a href="{{ url_for('estadisticas') }}">ESTADISTICAS</a>
+        <a href="{{ url_for('configuraciones') }}">CONFIGURACIONES</a>
+        <a href="{{ url_for('calendario') }}">CALENDARIO</a>
+        <a href="{{ url_for('logout') }}">CERRAR SESION</a>
         </div>
     </header>
 
@@ -34,7 +36,7 @@
 
             <h2>Datos Personales</h2>
             <section class="formSection">    
-                <div class="nroHistoria">
+                <div>
                     <label for="idPaciente">N° de historia</label>
                     <input type="text" id="idPaciente" name="idPaciente_display" value="{{ next_id }}" style="text-align: center" disabled ><br><br>
                 </div>
@@ -106,7 +108,6 @@
 
             <h2>Enfermedades Infecciosas</h2>
             <section class="formSection">       
-                <br>
                 <div>
                     <label for="citomegalovirus_status">Citomegalovirus</label>
                     <select name="citomegalovirus_status" id="citomegalovirus_status">
@@ -169,7 +170,6 @@
 
             <h2>Antecedentes Personales Patologicos</h2>
             <section class="formSection">
-                <br>
                 <div>
                     <label for="alergia_medicamento_status">Alergia a algun medicamento</label>
                     <select name="alergia_medicamento_status" id="alergia_medicamento_status">

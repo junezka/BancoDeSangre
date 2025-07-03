@@ -20,7 +20,7 @@ h1{
   font-size: 4vw;
   text-align: center;
 }
-h6{
+h6, h5 ,h4, h3, h2{
   padding: 5px;
   text-align: center;
 }
@@ -32,11 +32,6 @@ label{
   font-size: 3vw;
   text-align: right;
 }
-button{
-  border: 10% solid #ccc;
-  border-radius: 4px;
-}
-
 .centro{
   position: fixed;
   top: 50%;
@@ -50,7 +45,7 @@ button{
   flex-grow: 1;
   padding: 20px;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   grid-gap: 20px;
 }
 section{
@@ -119,23 +114,28 @@ textarea {
   border-radius: 4px;
   font-family: Arial, Helvetica, sans-serif;
 }
-.botonesRegistro{
-  display: flex;
-  justify-content: space-evenly;
-}
-.nroHistoria{
-  justify-content: left;
-  margin-left: 0 auto;
+button{
+  padding: 10px 15px;
+  margin: 5px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1em;
+  text-decoration: none;
+  color: black;
 }
 .sidebar {
-  background-color: #f0f0f069; /* Color de fondo semitransparente */
-  padding: 20px;
-  width: 200px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-content: center;
+  background-color: #f0f0f069;
+  font-size: 0.8em;
 }
 
 .sidebar a {
   display: block;
-  margin-bottom: 10px;
+  padding: 1%;
   text-decoration: none;
   color: black;
   transition: background-color 0.3s, color 0.3s, transform 0.3s, text-shadow 0.3s;
@@ -147,10 +147,29 @@ textarea {
   transform: scale(1.2); 
   text-shadow: 2px 2px 5px gray; 
 }
-.content {
-  display: flex;
-  text-align: center;
-}
-.container{
+.datosPaciente {
+  justify-content: space-between;
+  display: flex; 
+  flex-direction: row; 
+  align-items: center;
   padding: 20px;
+}
+.datosCalendario{
+   font-size: 0.8em; 
+   background-color: #e6f7ff; 
+   border: 1px solid #b3e0ff; 
+   padding: 3px; 
+   border-radius: 3px;
+}
+.tablaCalendario {
+   padding: 15px;
+   border: 1px solid #ccc;
+   vertical-align: top;
+   min-height: 100px;
+}
+.busquedaPaciente{
+  display: flexbox;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
 }

@@ -3,6 +3,8 @@ from flask import Flask, render_template, request, redirect, url_for, flash
 from config import config
 from flask_mysqldb import MySQL
 from flask_login import LoginManager, login_user, logout_user, login_required
+import calendar
+from datetime import datetime, timedelta
 
 #Models
 from models.modelsUser import modelsUser
@@ -12,6 +14,7 @@ from models.modelsHospitales import modelsHospitales
 #Entities
 from models.entities.user import Usuarios
 from models.entities.paciente import Paciente
+from models.entities.hospitales import Hospitales
 
 
 #Inicializamos la app
@@ -86,6 +89,104 @@ def logout():
 def bms():
     return render_template('bms.html')
 
+@app.route('/calendario')
+@login_required
+def calendario():    
+    
+    paciente_model = modelsPaciente(db) # Instanciar el modelo de paciente
+
+    # Lógica para generar el calendario
+    year = request.args.get('year', type=int)
+    month = request.args.get('month', type=int)
+
+    if not year or not month:
+        now = datetime.now()
+        year = now.year
+        month = now.month
+
+    # Asegurarse de que el mes esté en el rango correcto
+    if month < 1:
+        month = 12
+        year -= 1
+    elif month > 12:
+        month = 1
+        year += 1
+
+    cal = calendar.Calendar()
+    month_days = cal.monthdayscalendar(year, month) # Esto retorna una lista de listas, donde cada sublista es una semana
+
+    # Nombres de los meses y días de la semana en español
+    month_names = {
+        1: "Enero", 2: "Febrero", 3: "Marzo", 4: "Abril", 5: "Mayo", 6: "Junio",
+        7: "Julio", 8: "Agosto", 9: "Septiembre", 10: "Octubre", 11: "Noviembre", 12: "Diciembre"
+    }
+    day_names = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"]
+
+    # Obtener todas las citas para el mes actual del calendario
+    todas_las_citas_mes = paciente_model.obtenerTodasLasCitas() # Obtener todas las citas
+    
+    # Filtrar citas para el mes y año actual del calendario
+    citas_para_calendario = [
+        cita for cita in todas_las_citas_mes
+        if datetime.strptime(str(cita[4]), '%Y-%m-%d').year == year and \
+        datetime.strptime(str(cita[4]), '%Y-%m-%d').month == month
+    ]
+    
+    # Crear un diccionario para un acceso más fácil a las citas por día
+    citas_por_dia = {}
+    for cita in citas_para_calendario:
+        fecha_cita = datetime.strptime(str(cita[4]), '%Y-%m-%d').day
+        if fecha_cita not in citas_por_dia:
+            citas_por_dia[fecha_cita] = []
+        citas_por_dia[fecha_cita].append(cita)
+
+    return render_template('calendario.html', year=year,
+                           month=month,
+                           month_name=month_names[month],
+                           day_names=day_names,
+                           month_days=month_days,
+                           citas_por_dia=citas_por_dia)
+    return render_template('calendario.html')
+
+@app.route('/eliminar_cita/<int:idCita>', methods=['POST'])
+@login_required
+def eliminar_cita(idCita):
+    paciente_model = modelsPaciente(db)
+    try:
+        if paciente_model.eliminarCita(idCita):
+            flash("Cita eliminada exitosamente!")
+        else:
+            flash("No se pudo eliminar la cita.")
+    except Exception as e:
+        flash(f"Error al eliminar la cita: {e}")
+    return redirect(url_for('citas'))
+
+# Nueva ruta para mostrar el formulario de edición de una cita
+@app.route('/editar_cita/<int:idCita>', methods=['GET', 'POST'])
+@login_required
+def editar_cita(idCita):
+    paciente_model = modelsPaciente(db)
+    cita = paciente_model.obtenerCitaPorId(idCita) 
+    if cita is None:
+        flash("Cita no encontrada.")
+        return redirect(url_for('citas')) # Redirigir a la página de citas si no se encuentra la cita
+
+    if request.method == 'POST':
+        nueva_fecha = request.form['fechaCita']
+        nueva_hora = request.form['horaCita']
+        nuevo_motivo = request.form['motivoCita']
+        
+        try:
+            if paciente_model.modificarCita(idCita, nueva_fecha, nueva_hora, nuevo_motivo):
+                flash("Cita modificada exitosamente!")
+                return redirect(url_for('citas')) # O a la página de donde vino la solicitud
+            else:
+                flash("No se pudo modificar la cita.")
+        except Exception as e:
+            flash(f"Error al modificar la cita: {e}")
+
+    # Si es GET o si hubo un error en POST, renderiza el formulario de edición
+    return render_template('citas.html', cita=cita)
 
 #URL Registro Pacientes 
 @app.route('/registroPacientes', methods=['GET', 'POST'])
@@ -229,15 +330,108 @@ def registrarTratamiento():
             next_id = last_id + 1
             return render_template('tratamientos.html', next_id=next_id, form_data=request.form)
 
-@app.route('/citas')
+@app.route('/configuraciones', methods=['GET', 'POST']) 
+def configuraciones():
+    hospitales_model = modelsHospitales(db)
+
+    last_id_hospital = hospitales_model.get_last_hospital_id()
+    next_id_hospital = last_id_hospital + 1
+
+    if request.method == 'POST':
+
+        nombreHospital = request.form['nombreHospital']
+        
+        if not all([nombreHospital]):
+            flash("Por favor, complete todos los campos obligatorios.")
+            # Redireccionar y rellenar si falla
+            last_id_hospital = hospitales_model.get_last_hospital_id()
+            next_id_hospital = last_id_hospital + 1
+            return render_template('configuraciones.html', next_id_hospital=next_id_hospital, form_data=request.form)
+
+        try:
+            # Registrar el hospital en la tabla 'hospitales'
+            hospital_id = hospitales_model.registrarHospital(next_id_hospital, nombreHospital)
+            if hospital_id is None:
+                return render_template('configuraciones.html', next_id_hospital=next_id_hospital, form_data=request.form)
+            else:
+                flash("Hospital registrado exitosamente.")
+                return redirect(url_for("configuraciones"))
+        except Exception as e:
+            flash(f"Error al registrar hospital: {e}")
+            last_id_hospital = hospitales_model.get_last_hospital_id()
+            next_id_hospital = last_id_hospital + 1
+            return render_template('configuraciones.html', next_id_hospital=next_id_hospital, form_data=request.form)
+
+    else: # GET request (cuando se carga la página por primera vez)
+        last_id_hospital = hospitales_model.get_last_hospital_id()
+        next_id_hospital = last_id_hospital + 1
+        return render_template('configuraciones.html', next_id_hospital=next_id_hospital, form_data=request.form)
+
+#URL Citas
+@app.route('/citas', methods=['GET', 'POST'])
 @login_required
 def citas():
-    return render_template('citas.html')
+    paciente_encontrado = None
+    busqueda_realizada = False
+    paciente_citas = []
+    
+    paciente_model = modelsPaciente(db) # Instanciar fuera del if para usarlo siempre
 
+    if request.method == 'POST':
+        if 'busqueda' in request.form: # Si se está buscando un paciente
+            busqueda = request.form['busqueda']
+            if busqueda:
+                paciente_encontrado = paciente_model.buscarPaciente(busqueda)
+                busqueda_realizada = True
+                if paciente_encontrado:
+                    # Si el paciente es encontrado, obtener sus citas
+                    paciente_citas = paciente_model.obtenerCitasPorPaciente(paciente_encontrado[0]) # Suponiendo que el ID está en paciente_encontrado[0]
+                else:
+                    flash("No se encontró ningún paciente con el número de historia o cédula proporcionado.")
+            else:
+                flash("Por favor, ingrese un número de historia o cédula para buscar.")
+        elif 'idPaciente' in request.form: # Si se está registrando una cita
+            idPaciente = request.form['idPaciente']
+            fechaCita = request.form['fechaCita']
+            horaCita = request.form['horaCita']
+            motivoCita = request.form['motivoCita']
+            
+            try:
+                paciente_model.registrarCita(idPaciente, fechaCita, horaCita, motivoCita)
+                flash("Cita registrada exitosamente!", "success")
+                # Después de registrar, recargar las citas para el paciente
+                paciente_encontrado = paciente_model.buscarPaciente(idPaciente)
+                if paciente_encontrado:
+                    paciente_citas = paciente_model.obtenerCitasPorPaciente(idPaciente)
+                busqueda_realizada = True # Mantener la vista de búsqueda si se acaba de registrar
+            except Exception as e:
+                flash(f"Error al registrar la cita: {e}", "error")
+                # Si hay error, intentar re-poblar los datos del paciente si es posible
+                paciente_encontrado = paciente_model.buscarPaciente(idPaciente)
+                if paciente_encontrado:
+                    paciente_citas = paciente_model.obtenerCitasPorPaciente(idPaciente)
+                    busqueda_realizada = True
+    return render_template('citas.html', 
+                           paciente_encontrado=paciente_encontrado, 
+                           busqueda_realizada=busqueda_realizada,
+                           paciente_citas=paciente_citas) 
+
+#URL Estadísticas
 @app.route('/estadisticas')
 @login_required
 def estadisticas():
-    return render_template('estadisticas.html')
+    paciente_model = modelsPaciente(db)
+    
+    estadisticas_semana = paciente_model.contarPacientesAtendidosPorPeriodo("semana")
+    estadisticas_mes = paciente_model.contarPacientesAtendidosPorPeriodo("mes")
+    estadisticas_semestre = paciente_model.contarPacientesAtendidosPorPeriodo("semestre")
+    estadisticas_anio = paciente_model.contarPacientesAtendidosPorPeriodo("anio")
+
+    return render_template('estadisticas.html',
+                           estadisticas_semana=estadisticas_semana,
+                           estadisticas_mes=estadisticas_mes,
+                           estadisticas_semestre=estadisticas_semestre,
+                           estadisticas_anio=estadisticas_anio)
 
 #Se levanta en servidor local
 if __name__== '__main__':

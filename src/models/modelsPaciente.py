@@ -35,8 +35,7 @@ class modelsPaciente():
             ))
             self.mysql.connection.commit()
             
-            # Obtener el ID del paciente recién insertado
-            # Esto es crucial para enlazar el tratamiento
+            # Obtener el ID del paciente recién insertado para enlazar el tratamiento
             last_inserted_id = cursor.lastrowid
             
             cursor.close()
@@ -131,3 +130,149 @@ class modelsPaciente():
         except Exception as e:
             print(f"Error al obtener tratamientos: {str(e)}")
             return []
+        
+    # --- Métodos para la nueva tabla de Citas ---
+    def registrarCita(self, idPaciente, fechaCita, horaCita, motivoCita):
+        try:
+            cursor = self.mysql.connection.cursor()
+            query = """
+                INSERT INTO citas (idPaciente, fechaCita, horaCita, motivoCita)
+                VALUES (%s, %s, %s, %s)
+            """
+            cursor.execute(query, (idPaciente, fechaCita, horaCita, motivoCita,))
+            self.mysql.connection.commit()
+            cursor.close()
+            return True
+        except Exception as ex:
+            print(f"Error al registrar cita: {ex}")
+            self.mysql.connection.rollback()
+            raise Exception(ex)
+
+    def obtenerCitasPorPaciente(self, idPaciente):
+        try:
+            cursor = self.mysql.connection.cursor()
+            query = "SELECT idCita, idPaciente, fechaCita, horaCita, motivoCita FROM citas WHERE idPaciente = %s ORDER BY fechaCita DESC, horaCita DESC"
+            cursor.execute(query, (idPaciente,))
+            citas = cursor.fetchall()
+            cursor.close()
+            return citas
+        except Exception as e:
+            print(f"Error al obtener citas: {str(e)}")
+            return []
+
+    def obtenerTodasLasCitas(self):
+        try:
+            cursor = self.mysql.connection.cursor()
+            query = """
+                SELECT c.idCita, c.idPaciente, p.nombre, p.apellido, c.fechaCita, c.horaCita, c.motivoCita
+                FROM citas c
+                JOIN paciente p ON c.idPaciente = p.idPaciente
+                ORDER BY c.fechaCita ASC, c.horaCita ASC
+            """
+            cursor.execute(query)
+            citas = cursor.fetchall()
+            cursor.close()
+            return citas
+        except Exception as e:
+            print(f"Error al obtener todas las citas: {str(e)}")
+            return []
+
+    # --- Métodos para Estadísticas ---
+    def contarPacientesAtendidosPorPeriodo(self, periodo="semana"):
+        try:
+            cursor = self.mysql.connection.cursor()
+            sql_query = ""
+            if periodo == "semana":
+                # Asumiendo que quieres el conteo por semana del año
+                sql_query = """
+                    SELECT
+                        YEAR(fechaCita) AS anio,
+                        WEEK(fechaCita, 1) AS semana_del_anio,
+                        COUNT(DISTINCT idPaciente) AS total_pacientes
+                    FROM citas
+                    GROUP BY anio, semana_del_anio
+                    ORDER BY anio DESC, semana_del_anio DESC
+                    LIMIT 10;
+                """
+            elif periodo == "mes":
+                sql_query = """
+                    SELECT
+                        YEAR(fechaCita) AS anio,
+                        MONTH(fechaCita) AS mes,
+                        COUNT(DISTINCT idPaciente) AS total_pacientes
+                    FROM citas
+                    GROUP BY anio, mes
+                    ORDER BY anio DESC, mes DESC
+                    LIMIT 12;
+                """
+            elif periodo == "semestre":
+                sql_query = """
+                    SELECT
+                        YEAR(fechaCita) AS anio,
+                        CEIL(MONTH(fechaCita) / 6) AS semestre,
+                        COUNT(DISTINCT idPaciente) AS total_pacientes
+                    FROM citas
+                    GROUP BY anio, semestre
+                    ORDER BY anio DESC, semestre DESC
+                    LIMIT 4;
+                """
+            elif periodo == "anio":
+                sql_query = """
+                    SELECT
+                        YEAR(fechaCita) AS anio,
+                        COUNT(DISTINCT idPaciente) AS total_pacientes
+                    FROM citas
+                    GROUP BY anio
+                    ORDER BY anio DESC
+                    LIMIT 5;
+                """
+            
+            cursor.execute(sql_query)
+            resultados = cursor.fetchall()
+            cursor.close()
+            return resultados
+        except Exception as e:
+            print(f"Error al obtener estadísticas por {periodo}: {str(e)}")
+            return []
+        
+    def eliminarCita(self, idCita):
+        try:
+            cursor = self.mysql.connection.cursor()
+            query = "DELETE FROM citas WHERE idCita = %s"
+            cursor.execute(query, (idCita,))
+            self.mysql.connection.commit()
+            cursor.close()
+            return True
+        except Exception as ex:
+            print(f"Error al eliminar la cita: {ex}")
+            self.mysql.connection.rollback()
+            raise Exception(ex)
+
+    def modificarCita(self, idCita, nueva_fecha, nueva_hora, nuevo_motivo):
+        try:
+            cursor = self.mysql.connection.cursor()
+            query = """
+                UPDATE citas
+                SET fechaCita = %s, horaCita = %s, motivoCita = %s
+                WHERE idCita = %s
+            """
+            cursor.execute(query, (nueva_fecha, nueva_hora, nuevo_motivo, idCita))
+            self.mysql.connection.commit()
+            cursor.close()
+            return True
+        except Exception as ex:
+            print(f"Error al modificar la cita: {ex}")
+            self.mysql.connection.rollback()
+            raise Exception(ex)
+    
+    def obtenerCitaPorId(self, idCita):
+        try:
+            cursor = self.mysql.connection.cursor()
+            query = "SELECT * FROM citas WHERE idCita = %s"
+            cursor.execute(query, (idCita,))
+            cita = cursor.fetchone()
+            cursor.close()
+            return cita
+        except Exception as e:
+            print(f"Error al obtener la cita por ID: {str(e)}")
+            return None

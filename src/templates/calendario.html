@@ -1,0 +1,66 @@
+{% extends "./base.html" %}
+
+{% block title %}Banco Municipal de Sangre{% endblock %}
+
+
+{% block content %}
+<div>
+    <header>
+    <div class="sidebar">
+        <a href="{{ url_for('bms') }}">INICIO</a>
+        <a href="{{ url_for('registroPacientes') }}">REGISTRO PACIENTE</a>
+        <a href="{{ url_for('citas') }}">CITAS</a>
+        <a href="{{ url_for('consultas') }}">CONSULTAS</a>
+        <a href="{{ url_for('tratamientos') }}">TRATAMIENTOS</a>
+        <a href="{{ url_for('estadisticas') }}">ESTADISTICAS</a>
+        <a href="{{ url_for('configuraciones') }}">CONFIGURACIONES</a>
+        <a href="{{ url_for('calendario') }}">CALENDARIO</a>
+        <a href="{{ url_for('logout') }}">CERRAR SESION</a>
+    </div>
+    </header>
+    <div>
+        <h2>CALENDARIO</h2>
+            <div style="text-align: center; margin-bottom: 20px;">
+                <a href="{{ url_for('calendario', year=year if month > 1 else year - 1, month=month - 1 if month > 1 else 12) }}" style="margin-right: 20px; text-decoration: none; color: black;">&laquo; Mes Anterior</a>
+                <span style="font-size: 1.2em; font-weight: bold;">{{ month_name }} {{ year }}</span>
+                <a href="{{ url_for('calendario', year=year if month < 12 else year + 1, month=month + 1 if month < 12 else 1) }}" style="margin-left: 20px; text-decoration: none; color: black;">Mes Siguiente &raquo;</a>
+            </div>
+
+            <table style="width: 100%; border-collapse: collapse; text-align: center;">
+                <thead>
+                    <tr>
+                        {% for day_name in day_names %}
+                        <th style="padding: 10px; border: 1px solid #ccc; background-color: #f2f2f2;">{{ day_name }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for week in month_days %}
+                    <tr>
+                        {% for day in week %}
+                        <td class="tablaCalendario">
+                            {% if day != 0 %}
+                                <strong>{{ day }}</strong>
+                                <br>
+                                {% if citas_por_dia[day] is defined %}
+                                    {% for cita in citas_por_dia[day] %}
+                                        <div class="datosCalendario">
+                                            {{ cita[5] }} <br>
+                                            {{ cita[2] }} <br>
+                                            {{ cita[3] }} <br>
+                                            ({{ cita[6] | truncate(20) }})
+                                        </div>
+                                    {% endfor %}
+                                {% endif %}
+                            {% else %}
+                                &nbsp;
+                            {% endif %}
+                        </td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

@@ -3,21 +3,22 @@
 {% block title %}Consultas de Pacientes{% endblock %}
 {% block content %}
 
-<div class="content">
+<div>
     <header>
         <div class="sidebar">
-            <a href="{{ url_for('bms') }}">INICIO</a>
-            <a href="{{ url_for('registroPacientes') }}">REGISTRO PACIENTE</a>
-            <a href="{{ url_for('citas') }}">CITAS</a>
-            <a href="{{ url_for('consultas') }}">CONSULTAS</a>
-            <a href="{{ url_for('tratamientos') }}">TRATAMIENTOS</a>
-            <a href="{{ url_for('estadisticas') }}">ESTADISTICAS</a>
-            <a href="{{ url_for('login') }}">CERRAR SESION</a>
+        <a href="{{ url_for('bms') }}">INICIO</a>
+        <a href="{{ url_for('registroPacientes') }}">REGISTRO PACIENTE</a>
+        <a href="{{ url_for('citas') }}">CITAS</a>
+        <a href="{{ url_for('consultas') }}">CONSULTAS</a>
+        <a href="{{ url_for('tratamientos') }}">TRATAMIENTOS</a>
+        <a href="{{ url_for('estadisticas') }}">ESTADISTICAS</a>
+        <a href="{{ url_for('configuraciones') }}">CONFIGURACIONES</a>
+        <a href="{{ url_for('calendario') }}">CALENDARIO</a>
+        <a href="{{ url_for('logout') }}">CERRAR SESION</a>
         </div>
     </header>
 
     <div class="sectionForm">
-        <h2>Buscar Paciente</h2>
         <section>
             {% with messages = get_flashed_messages() %}
                 {% if messages %}
@@ -29,14 +30,10 @@
                 {% endfor %}
                 {% endif %}
             {% endwith %}
-            <form action="{{ url_for('consultas') }}" class="formRegistro" method="POST">
-
-                <br>
-                <div>
-                    <label for="busqueda">Buscar por N° de Historia o Cédula:</label>
-                    <input type="text" id="busqueda" name="busqueda" placeholder="Ingrese N° de Historia o Cédula" value="{{ request.args.get('busqueda', '') }}">
-                </div>
-                <br>
+            <h2>Buscar Paciente por Cédula o ID de Historia</h2>
+            <form action="{{ url_for('consultas') }}" class="busquedaPaciente" method="POST">
+                <label for="busqueda">N° de Historia o Cédula:</label>
+                <input type="text" id="busqueda" name="busqueda" placeholder="Ingrese N° de Historia o Cédula" value="{{ request.args.get('busqueda', '') }}">
                 <button type="submit">Buscar</button>
             </form>
         </section>
@@ -104,7 +101,7 @@
                     <th>Alergia a algun medicamento</th>
                     <th>Especifique</th>
                     <th>Diabetes</th>
-                    <th>hipertension arterial</th>
+                    <th>Hipertension Arterial</th>
                 </thead>
                 <tbody>
                     <td>{{ paciente_encontrado[19] | default('N/A') }}</td>

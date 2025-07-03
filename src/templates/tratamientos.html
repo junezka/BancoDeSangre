@@ -2,20 +2,22 @@
 
 {% block title %}Tratamientos de Pacientes{% endblock %}
 {% block content %}
-<div class="content">
+<div>
     <header>
         <div class="sidebar">
-            <a href="{{ url_for('bms') }}">INICIO</a>
-            <a href="{{ url_for('registroPacientes') }}">REGISTRO PACIENTE</a>
-            <a href="{{ url_for('citas') }}">CITAS</a>
-            <a href="{{ url_for('consultas') }}">CONSULTAS</a>
-            <a href="{{ url_for('tratamientos') }}">TRATAMIENTOS</a>
-            <a href="{{ url_for('estadisticas') }}">ESTADISTICAS</a>
-            <a href="{{ url_for('login') }}">CERRAR SESION</a>
+        <a href="{{ url_for('bms') }}">INICIO</a>
+        <a href="{{ url_for('registroPacientes') }}">REGISTRO PACIENTE</a>
+        <a href="{{ url_for('citas') }}">CITAS</a>
+        <a href="{{ url_for('consultas') }}">CONSULTAS</a>
+        <a href="{{ url_for('tratamientos') }}">TRATAMIENTOS</a>
+        <a href="{{ url_for('estadisticas') }}">ESTADISTICAS</a>
+        <a href="{{ url_for('configuraciones') }}">CONFIGURACIONES</a>
+        <a href="{{ url_for('calendario') }}">CALENDARIO</a>
+        <a href="{{ url_for('logout') }}">CERRAR SESION</a>
         </div>
     </header>
 
-    <div class="sectionForm">
+    <div class="contenedor-pos">
         <h2>Tratamientos Pacientes</h2>
         <section>
             {% with messages = get_flashed_messages() %}
@@ -28,22 +30,18 @@
                 {% endfor %}
                 {% endif %}
             {% endwith %}
-            <form action="{{ url_for('tratamientos') }}" class="formRegistro" method="POST">
-                <br>
-                <div>
-                    <label for="busqueda">Buscar Paciente por N° de Historia o Cédula:</label>
-                    <input type="text" id="busqueda" name="busqueda" placeholder="Ingrese N° de Historia o Cédula" value="{{ request.args.get('busqueda', '') }}">
-                </div>
-                <br>
+            <form action="{{ url_for('tratamientos') }}" class="busquedaPaciente" method="POST">
+                <label for="busqueda">N° de Historia o Cédula:</label>
+                <input type="text" id="busqueda" name="busqueda" placeholder="Ingrese N° de Historia o Cédula" value="{{ request.args.get('busqueda', '') }}">
                 <button type="submit">Buscar</button>
             </form>
         </section>
         <br>
         {% if paciente_encontrado %}
-        <h3>Datos del Paciente</h3>
-         <form action="{{ url_for('registrarTratamiento') }}" method="POST">
+         <form action="{{ url_for('registrarTratamiento') }}"  method="POST">
+            <h3>Datos del Paciente</h3>
             <input type="hidden" name="idPaciente" value="{{ paciente_encontrado[0] }}">
-            <div class="content" style="justify-content: space-between;">
+            <div class="datosPaciente">
                 <label for="nombre">Nombre</label>
                 <input type="text" id="nombre" value="{{ paciente_encontrado[1] }}" style="text-align: center" disabled ><br>
                 <label for="apellido">Apellido</label>
@@ -51,10 +49,8 @@
                 <label for="nroCedula">Cedula</label>
                 <input type="text" id="nroCedula" value="{{ paciente_encontrado[3] }}" style="text-align: center" disabled ><br>
             </div>
-            <br>
             <h3>Datos del Tratamiento</h3> 
                 <section class="formSection">
-                    <br>
                     <div>
                         <label for="recibe_tratamiento_status">Recibe tratamiento</label>
                         <select name="recibe_tratamiento_status" id="recibe_tratamiento_status" value="{{ form_data.medicacion if form_data else '' }}">

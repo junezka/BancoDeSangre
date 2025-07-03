@@ -4,12 +4,14 @@
 
 
 {% block content %}
+<div >
+    <header style="text-align: right">
+        <a href="{{ url_for('logout') }}" style="text-decoration: none; color: black;">
+        <h4>CERRAR SESION</h4>
+        </a>
+    </header>
+</div>
 <div class="content">
-    <div>
-        <div class="sidebar">
-            <a href="{{ url_for('logout') }}">CERRAR SESION</a>
-        </div>   
-    </div>
     <div class="listaInicio">
         <section>
             <a href="{{ url_for('consultas') }}">
@@ -19,7 +21,7 @@
         </section>
         <section>
             <a href="{{ url_for('registroPacientes') }}">
-            <img src="../static/img/registro.png" alt="Img1" width="50%">
+            <img src="../static/img/Registros.png" alt="Img1" width="50%">
             </a>
             <h5>REGISTRO PACIENTES</h5>
         </section>
@@ -40,6 +42,18 @@
             <img src="../static/img/estadisticas.png" alt="Img1" width="50%">
             </a>
             <h5>ESTADISTICAS</h5>
+        </section>
+        <section>
+            <a href="{{ url_for('configuraciones') }}">
+            <img src="../static/img/Configuracion.png" alt="Img1" width="50%">
+            </a>
+            <h5>CONFIGURACIONES</h5>
+        </section>
+        <section>
+            <a href="{{ url_for('calendario') }}">
+            <img src="../static/img/Calendario.png" alt="Img1" width="50%">
+            </a>
+            <h5>CALENDARIO</h5>
         </section>
     </div>
 </div>

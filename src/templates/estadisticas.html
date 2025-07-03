@@ -1,8 +1,8 @@
 {% extends "./base.html" %}
 
-{% block title %}Tratamientos{% endblock %}
+{% block title %}ESTADÍSTICAS{% endblock %}
 {% block content %}
-<div class="content">
+<div>
     <header>
     <div class="sidebar">
         <a href="{{ url_for('bms') }}">INICIO</a>
@@ -11,8 +11,124 @@
         <a href="{{ url_for('consultas') }}">CONSULTAS</a>
         <a href="{{ url_for('tratamientos') }}">TRATAMIENTOS</a>
         <a href="{{ url_for('estadisticas') }}">ESTADISTICAS</a>
-        <a href="{{ url_for('login') }}">CERRAR SESION</a>
+        <a href="{{ url_for('configuraciones') }}">CONFIGURACIONES</a>
+        <a href="{{ url_for('calendario') }}">CALENDARIO</a>
+        <a href="{{ url_for('logout') }}">CERRAR SESION</a>
     </div>
 </header>
+    <div>
+        <h2>Estadísticas de Pacientes Atendidos</h2>
+
+        <section class="listaPacienteTable">
+            <h3>Pacientes Atendidos por Semana</h3>
+            {% if estadisticas_semana %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Año</th>
+                        <th>Semana del Año</th>
+                        <th>Total Pacientes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for stat in estadisticas_semana %}
+                    <tr>
+                        <td>{{ stat[0] }}</td>
+                        <td>{{ stat[1] }}</td>
+                        <td>{{ stat[2] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p>No hay datos de pacientes atendidos por semana.</p>
+            {% endif %}
+
+            <h3>Pacientes Atendidos por Mes</h3>
+            {% if estadisticas_mes %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Año</th>
+                        <th>Mes</th>
+                        <th>Total Pacientes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for stat in estadisticas_mes %}
+                    <tr>
+                        <td>{{ stat[0] }}</td>
+                        <td>{{ stat[1] }}</td>
+                        <td>{{ stat[2] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p>No hay datos de pacientes atendidos por mes.</p>
+            {% endif %}
+
+            <h3>Pacientes Atendidos por Semestre</h3>
+            {% if estadisticas_semestre %}
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Año</th>
+                        <th>Semestre</th>
+                        <th>Total Pacientes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for stat in estadisticas_semestre %}
+                    <tr>
+                        <td>{{ stat[0] }}</td>
+                        <td>{{ stat[1] }}</td>
+                        <td>{{ stat[2] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p>No hay datos de pacientes atendidos por semestre.</p>
+            {% endif %}
+
+            <h3>Pacientes Atendidos por Año</h3>
+            {% if estadisticas_anio %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Año</th>
+                        <th>Total Pacientes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for stat in estadisticas_anio %}
+                    <tr>
+                        <td>{{ stat[0] }}</td>
+                        <td>{{ stat[1] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p>No hay datos de pacientes atendidos por año.</p>
+            {% endif %}
+            <div>
+                <h3>Descargar Reportes</h3>
+                <button>
+                    <a href="">Año</a>
+                </button>
+                <button>
+                    <a href="">Semana</a>
+                </button>
+                <button>
+                    <a href="">Mes</a>
+                </button>
+                <button>
+                    <a href="">Semestre</a>
+                </button>
+            </div>
+        </section>
+    </div>    
 </div>
 {% endblock %}
