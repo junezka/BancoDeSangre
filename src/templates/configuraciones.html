@@ -5,40 +5,81 @@
 <div>
     <header>
         <div class="sidebar">
-        <a href="{{ url_for('bms') }}">INICIO</a>
-        <a href="{{ url_for('registroPacientes') }}">REGISTRO PACIENTE</a>
-        <a href="{{ url_for('citas') }}">CITAS</a>
-        <a href="{{ url_for('consultas') }}">CONSULTAS</a>
-        <a href="{{ url_for('tratamientos') }}">TRATAMIENTOS</a>
-        <a href="{{ url_for('estadisticas') }}">ESTADISTICAS</a>
-        <a href="{{ url_for('configuraciones') }}">CONFIGURACIONES</a>
-        <a href="{{ url_for('calendario') }}">CALENDARIO</a>
-        <a href="{{ url_for('logout') }}">CERRAR SESION</a>
+            <a href="{{ url_for('bms') }}">INICIO</a>
+            <a href="{{ url_for('registroPacientes') }}">REGISTRO PACIENTE</a>
+            <a href="{{ url_for('citas') }}">CITAS</a>
+            <a href="{{ url_for('consultas') }}">CONSULTAS</a>
+            <a href="{{ url_for('tratamientos') }}">TRATAMIENTOS</a>
+            <a href="{{ url_for('estadisticas') }}">ESTADISTICAS</a>
+            <a href="{{ url_for('configuraciones') }}">CONFIGURACIONES</a>
+            <a href="{{ url_for('calendario') }}">CALENDARIO</a>
+            <a href="{{ url_for('logout') }}">CERRAR SESION</a>
         </div>
     </header>
 
     <div class="busquedaPaciente">
-    <h2>Registro de hospitales </h2>
+        <h2>Registro de hospitales </h2>
         <section>
             {% with messages = get_flashed_messages() %}
                 {% if messages %}
                     <br>
                     {% for message in messages %}
                         <div role="alert" style="background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; padding: 10px; margin-bottom: 15px; border-radius: 5px;">
-                            <strong>
-                                {{ message }}
-                            </strong>
+                            <strong>{{ message }}</strong>
                         </div>
                     {% endfor %}
                 {% endif %}
             {% endwith %}
             <form action="{{ url_for('configuraciones') }}" class="busquedaPaciente" method="POST">
                 <label for="id_hospital">N° de hospital</label>
-                <input type="text" id="id_hospital" name="id_hospital" value="{{ next_id_hospital }}" style="text-align: center" disabled ><br><br>
+                <input type="text" id="id_hospital" name="id_hospital" value="{{ next_id_hospital }}" style="text-align: center" disabled><br><br>
                 <label for="nombreHospital">Nombre del Hospital</label>
                 <input type="text" name="nombreHospital" placeholder="Nombre del Hospital" required><br><br>
                 <button type="submit">Registrar</button>
             </form>
-    </section>
+        </section>
+        <section>
+            <h2>Gestión de Usuarios</h2>
+            <table class="busquedaPaciente">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Usuario</th>
+                        <th>Nombre Completo</th>
+                        <th>Estado</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for usuario in all_users %}
+                    <tr>
+                        <td>{{ usuario[0] }}</td> {# id_usuarios #}
+                        <td>{{ usuario[1] }}</td> {# usuario #}
+                        <td>{{ usuario[2] }}</td> {# fullname #}
+                        <td>
+                            {% if usuario[3] %}
+                                <span>Bloqueado</span>
+                            {% else %}
+                                <span>Activo</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <form action="{{ url_for('bloqueo_usuario') }}" method="POST" style="display:inline;">
+                                <input type="hidden" name="toggle_lock_user_id" value="{{ usuario[0] }}">
+                                <input type="hidden" name="current_lock_status" value="{{ usuario[3] }}">
+                                
+                                {% if usuario[3] %}
+                                    <button type="submit">Desbloquear</button>
+                                {% else %}
+                                    <button type="submit" disabled>Activo</button>
+                                {% endif %}
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+    </div>
 </div>
 {% endblock %}

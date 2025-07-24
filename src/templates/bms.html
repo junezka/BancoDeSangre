@@ -12,6 +12,18 @@
     </header>
 </div>
 <div class="content">
+    {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <br>
+                    {% for message in messages %}
+                        <div role="alert" style="background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; padding: 10px; margin-bottom: 15px; border-radius: 5px; text-align: center;">
+                            <strong>
+                                {{ message }}
+                            </strong>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
     <div class="listaInicio">
         <section>
             <a href="{{ url_for('consultas') }}">

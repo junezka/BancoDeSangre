@@ -5,46 +5,47 @@ class modelsPaciente():
     def __init__(self, mysql_instance):
         self.mysql = mysql_instance
 
-    def regisroPaciente(self, nombre, apellido, nroCedula, genero, fechaNacimiento, direccion,
+    def registroPaciente(self, fechaConsulta, nombre, apellido, nroCedula, genero, fechaNacimiento, direccion,
+                            estado_civil, diagnostico_inicial, remitido_por_id, elaborado_por_id,
+                            citomegalovirus_status, tuberculosis_status, hepatitis_status, hepatitis_tipo,
+                            varicella_zoster_status, vih_status, otros_infecciosas_status, especificar_otros_infecciosas,
+                            alergia_a_medicamento, especificar_alergia, diabetes, hipertension_arterial): 
+            try:
+                cursor = self.mysql.connection.cursor()
+
+                # The query to insert a new patient with ALL fields
+                query = """
+                    INSERT INTO paciente(
+                        fechaConsulta, nombre, apellido, nroCedula, genero, fechaNacimiento, direccion,
                         estado_civil, diagnostico_inicial, remitido_por_id, elaborado_por_id,
                         citomegalovirus_status, tuberculosis_status, hepatitis_status, hepatitis_tipo,
                         varicella_zoster_status, vih_status, otros_infecciosas_status, especificar_otros_infecciosas,
-                        alergia_a_medicamento, especificar_alergia, diabetes, hipertension_arterial):
-        try:
-            cursor = self.mysql.connection.cursor()
-            
-            # La consulta para insertar un nuevo paciente con TODOS los campos
-            query = """ 
-                INSERT INTO paciente(
-                    nombre, apellido, nroCedula, genero, fechaNacimiento, direccion, 
+                        alergia_a_medicamento, especificar_alergia, diabetes, hipertension_arterial
+                    )
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                """
+
+                # The data must be passed in the same order as the columns in the query.
+                cursor.execute(query, (fechaConsulta,
+                    nombre, apellido, int(nroCedula), genero, fechaNacimiento, direccion,
                     estado_civil, diagnostico_inicial, remitido_por_id, elaborado_por_id,
                     citomegalovirus_status, tuberculosis_status, hepatitis_status, hepatitis_tipo,
                     varicella_zoster_status, vih_status, otros_infecciosas_status, especificar_otros_infecciosas,
-                    alergia_a_medicamento, especificar_alergia, diabetes, hipertension_arterial
-                )
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-            """
-            
-            # Los datos deben pasarse en el mismo orden que las columnas en la consulta.
-            cursor.execute(query, (
-                nombre, apellido, int(nroCedula), genero, fechaNacimiento, direccion,
-                estado_civil, diagnostico_inicial, remitido_por_id, elaborado_por_id,
-                citomegalovirus_status, tuberculosis_status, hepatitis_status, hepatitis_tipo,
-                varicella_zoster_status, vih_status, otros_infecciosas_status, especificar_otros_infecciosas,
-                alergia_a_medicamento, especificar_alergia, diabetes, hipertension_arterial
-            ))
-            self.mysql.connection.commit()
-            
-            # Obtener el ID del paciente recién insertado para enlazar el tratamiento
-            last_inserted_id = cursor.lastrowid
-            
-            cursor.close()
-            return last_inserted_id # Retorna el ID del paciente para usarlo con tratamientos
-            
-        except Exception as ex:
-            print(f"Error en el registro del paciente: {ex}")
-            self.mysql.connection.rollback()
-            raise Exception(ex)
+                    alergia_a_medicamento, especificar_alergia, diabetes, hipertension_arterial # ADD fechaConsulta here
+                ))
+                self.mysql.connection.commit()
+
+                # Obtener el ID del paciente recién insertado para enlazar el tratamiento
+                last_inserted_id = cursor.lastrowid
+
+                cursor.close()
+                return last_inserted_id # Retorna el ID del paciente para usarlo con tratamientos
+
+            except Exception as ex:
+                print(f"Error en el registro del paciente: {ex}")
+                self.mysql.connection.rollback()
+                raise Exception(ex)
+
         
     def modificarPacientes(self,recibe_tratamiento_status, especificacion_tratamiento, 
                            fecha_tratamiento, medicacion, idPaciente):
@@ -176,64 +177,6 @@ class modelsPaciente():
         except Exception as e:
             print(f"Error al obtener todas las citas: {str(e)}")
             return []
-
-    # --- Métodos para Estadísticas ---
-    def contarPacientesAtendidosPorPeriodo(self, periodo="semana"):
-        try:
-            cursor = self.mysql.connection.cursor()
-            sql_query = ""
-            if periodo == "semana":
-                # Asumiendo que quieres el conteo por semana del año
-                sql_query = """
-                    SELECT
-                        YEAR(fechaCita) AS anio,
-                        WEEK(fechaCita, 1) AS semana_del_anio,
-                        COUNT(DISTINCT idPaciente) AS total_pacientes
-                    FROM citas
-                    GROUP BY anio, semana_del_anio
-                    ORDER BY anio DESC, semana_del_anio DESC
-                    LIMIT 10;
-                """
-            elif periodo == "mes":
-                sql_query = """
-                    SELECT
-                        YEAR(fechaCita) AS anio,
-                        MONTH(fechaCita) AS mes,
-                        COUNT(DISTINCT idPaciente) AS total_pacientes
-                    FROM citas
-                    GROUP BY anio, mes
-                    ORDER BY anio DESC, mes DESC
-                    LIMIT 12;
-                """
-            elif periodo == "semestre":
-                sql_query = """
-                    SELECT
-                        YEAR(fechaCita) AS anio,
-                        CEIL(MONTH(fechaCita) / 6) AS semestre,
-                        COUNT(DISTINCT idPaciente) AS total_pacientes
-                    FROM citas
-                    GROUP BY anio, semestre
-                    ORDER BY anio DESC, semestre DESC
-                    LIMIT 4;
-                """
-            elif periodo == "anio":
-                sql_query = """
-                    SELECT
-                        YEAR(fechaCita) AS anio,
-                        COUNT(DISTINCT idPaciente) AS total_pacientes
-                    FROM citas
-                    GROUP BY anio
-                    ORDER BY anio DESC
-                    LIMIT 5;
-                """
-            
-            cursor.execute(sql_query)
-            resultados = cursor.fetchall()
-            cursor.close()
-            return resultados
-        except Exception as e:
-            print(f"Error al obtener estadísticas por {periodo}: {str(e)}")
-            return []
         
     def eliminarCita(self, idCita):
         try:
@@ -248,23 +191,6 @@ class modelsPaciente():
             self.mysql.connection.rollback()
             raise Exception(ex)
 
-    def modificarCita(self, idCita, nueva_fecha, nueva_hora, nuevo_motivo):
-        try:
-            cursor = self.mysql.connection.cursor()
-            query = """
-                UPDATE citas
-                SET fechaCita = %s, horaCita = %s, motivoCita = %s
-                WHERE idCita = %s
-            """
-            cursor.execute(query, (nueva_fecha, nueva_hora, nuevo_motivo, idCita))
-            self.mysql.connection.commit()
-            cursor.close()
-            return True
-        except Exception as ex:
-            print(f"Error al modificar la cita: {ex}")
-            self.mysql.connection.rollback()
-            raise Exception(ex)
-    
     def obtenerCitaPorId(self, idCita):
         try:
             cursor = self.mysql.connection.cursor()
@@ -276,3 +202,75 @@ class modelsPaciente():
         except Exception as e:
             print(f"Error al obtener la cita por ID: {str(e)}")
             return None
+        
+    def contarPacientesAtendidosPorRangoFechas(self, fecha_inicio, fecha_fin):
+        try:
+            cursor = self.mysql.connection.cursor()
+            query = """
+                SELECT
+                    DATE(fechaCita) AS fecha_cita,
+                    COUNT(DISTINCT idPaciente) AS total_pacientes
+                FROM citas
+                WHERE fechaCita BETWEEN %s AND %s
+                GROUP BY DATE(fechaCita)
+                ORDER BY fecha_cita ASC;
+            """
+            cursor.execute(query, (fecha_inicio, fecha_fin))
+            resultados = cursor.fetchall()
+            cursor.close()
+            return resultados
+        except Exception as e:
+            print(f"Error al obtener estadísticas por rango de fechas: {str(e)}")
+            return []
+        
+    def contarPacientesRemitidosPorHospital(self, fecha_inicio, fecha_fin):
+        try:
+            cursor = self.mysql.connection.cursor()
+            query = """
+                SELECT
+                    h.nombreHospital,
+                    COUNT(p.idPaciente) AS total_pacientes_remitidos
+                FROM
+                    paciente p
+                JOIN
+                    hospitales h ON p.remitido_por_id = h.id_hospital
+                WHERE
+                    p.fechaConsulta BETWEEN %s AND %s
+                GROUP BY
+                    h.nombreHospital
+                ORDER BY
+                    total_pacientes_remitidos DESC;
+            """
+            cursor.execute(query, (fecha_inicio, fecha_fin))
+            resultados = cursor.fetchall()
+            cursor.close()
+            return resultados
+        except Exception as e:
+            print(f"Error al contar pacientes remitidos por hospital: {str(e)}")
+            return []
+
+    def contarPacientesAtendidosPorUsuario(self, fecha_inicio, fecha_fin):
+        try:
+            cursor = self.mysql.connection.cursor()
+            query = """
+                SELECT
+                    u.fullname,
+                    COUNT(p.idPaciente) AS total_pacientes_atendidos
+                FROM
+                    paciente p
+                JOIN
+                    usuarios u ON p.elaborado_por_id = u.id_usuarios
+                WHERE
+                    p.fechaConsulta BETWEEN %s AND %s
+                GROUP BY
+                    u.fullname
+                ORDER BY
+                    total_pacientes_atendidos DESC;
+            """
+            cursor.execute(query, (fecha_inicio, fecha_fin))
+            resultados = cursor.fetchall()
+            cursor.close()
+            return resultados
+        except Exception as e:
+            print(f"Error al contar pacientes atendidos por usuario: {str(e)}")
+            return []

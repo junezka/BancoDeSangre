@@ -18,7 +18,7 @@
     </header>
     <div class="sectionForm">
         <h2>Gestión de Citas</h2>
-        <section>
+        <div>
             {% with messages = get_flashed_messages(with_categories=true) %}
                 {% if messages %}
                 <br>
@@ -47,69 +47,65 @@
                 <label for="nroCedula">Cédula</label>
                 <input type="text" id="nroCedula" value="{{ paciente_encontrado[3] }}" style="text-align: center" disabled><br>
             </div>
-            <br>
-            <div>
-            <h3>Registrar Nueva Cita</h3>
-                <form action="{{ url_for('citas') }}" method="POST">
-                    <input type="hidden" name="idPaciente" value="{{ paciente_encontrado[0] }}">
-                    <section class="formRegistro">
-                        <div>
-                            <label for="fechaCita">Fecha de la Cita:</label>
-                            <input type="date" id="fechaCita" name="fechaCita" required>
-                        </div>
-                        <div>
-                            <label for="horaCita">Hora de la Cita:</label>
-                            <input type="time" id="horaCita" name="horaCita" required>
-                        </div>
-                        <div>
-                            <label for="motivoCita">Motivo de la Cita:</label>
-                            <textarea id="motivoCita" name="motivoCita" rows="4" required></textarea>
-                        </div>
-                        <div>
-                            <button type="submit">Registrar Cita</button>
-                            <button type="reset">Borrar</button>
-                        </div>
-                    </section>
-                </form>
+            <div class="listaCitas">
+                <section>
+                <h3>Registrar Nueva Cita</h3>
+                    <form action="{{ url_for('citas') }}" method="POST">
+                        <input type="hidden" name="idPaciente" value="{{ paciente_encontrado[0] }}">
+                        <section>
+                            <div>
+                                <label for="fechaCita">Fecha de la Cita:</label>
+                                <input type="date" id="fechaCita" name="fechaCita" required>
+                            </div>
+                            <div>
+                                <label for="horaCita">Hora de la Cita:</label>
+                                <input type="time" id="horaCita" name="horaCita" required>
+                            </div>
+                            <div>
+                                <label for="motivoCita">Motivo de la Cita:</label>
+                                <textarea id="motivoCita" name="motivoCita" rows="4" required></textarea>
+                            </div>
+                            <div>
+                                <button type="submit">Registrar Cita</button>
+                                <button type="reset">Borrar</button>
+                            </div>
+                        </section>
+                    </form>
+                </section>
+                <section>
+                    <h3>Citas Programadas para {{ paciente_encontrado[1] }} {{ paciente_encontrado[2] }}</h3>
+                    {% if paciente_citas %}
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Motivo</th>
+                                <th>Acciones</th> {# Añade esta columna para los botones #}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for cita in paciente_citas %}
+                            <tr>
+                                <td>{{ cita[2] }}</td> 
+                                <td>{{ cita[4] }}</td> 
+                                <td>
+                                    <form action="{{ url_for('eliminar_cita', idCita=cita[0]) }}" method="post" class="button">
+                                        <button type="submit" onclick="return confirm('¿Estás seguro de que deseas eliminar esta cita?');">Eliminar</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% else %}
+                    {% endif %}
+
+                    {% elif busqueda_realizada and not paciente_encontrado %}
+                    <p>No se encontró el paciente.</p>
+                    {% endif %}
+                </section>
             </div>
-
-            <h3>Citas Programadas para {{ paciente_encontrado[1] }} {{ paciente_encontrado[2] }}</h3>
-            {% if paciente_citas %}
-            <table>
-                <thead>
-                    <tr>
-                        <th>Fecha</th>
-                        <th>Motivo</th>
-                        <th>Acciones</th> {# Añade esta columna para los botones #}
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for cita in paciente_citas %}
-                    <tr>
-                        <td>{{ cita[2] }}</td> 
-                        <td>{{ cita[4] }}</td> 
-                        <td>
-                            {# Botones de acción para cada cita del paciente #}
-                            <section class="formSection">
-                                <form action="{{ url_for('editar_cita', idCita=cita[0]) }}" method="GET" class="button">
-                                    <button type="submit">Editar</button>
-                                </form>
-                                <form action="{{ url_for('eliminar_cita', idCita=cita[0]) }}" method="POST" class="button">
-                                    <button type="submit" >Eliminar</button>
-                                </form>
-                            </section>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-            {% else %}
-            {% endif %}
-
-            {% elif busqueda_realizada and not paciente_encontrado %}
-            <p>No se encontró el paciente.</p>
-            {% endif %}
-        </section>
+        </div>
     </div>    
 </div>
 {% endblock %}

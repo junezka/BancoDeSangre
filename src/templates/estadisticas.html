@@ -4,131 +4,192 @@
 {% block content %}
 <div>
     <header>
-    <div class="sidebar">
-        <a href="{{ url_for('bms') }}">INICIO</a>
-        <a href="{{ url_for('registroPacientes') }}">REGISTRO PACIENTE</a>
-        <a href="{{ url_for('citas') }}">CITAS</a>
-        <a href="{{ url_for('consultas') }}">CONSULTAS</a>
-        <a href="{{ url_for('tratamientos') }}">TRATAMIENTOS</a>
-        <a href="{{ url_for('estadisticas') }}">ESTADISTICAS</a>
-        <a href="{{ url_for('configuraciones') }}">CONFIGURACIONES</a>
-        <a href="{{ url_for('calendario') }}">CALENDARIO</a>
-        <a href="{{ url_for('logout') }}">CERRAR SESION</a>
-    </div>
-</header>
+        <div class="sidebar">
+            <a href="{{ url_for('bms') }}">INICIO</a>
+            <a href="{{ url_for('registroPacientes') }}">REGISTRO PACIENTE</a>
+            <a href="{{ url_for('citas') }}">CITAS</a>
+            <a href="{{ url_for('consultas') }}">CONSULTAS</a>
+            <a href="{{ url_for('tratamientos') }}">TRATAMIENTOS</a>
+            <a href="{{ url_for('estadisticas') }}">ESTADÍSTICAS</a>
+            <a href="{{ url_for('configuraciones') }}">CONFIGURACIONES</a>
+            <a href="{{ url_for('calendario') }}">CALENDARIO</a>
+            <a href="{{ url_for('logout') }}">CERRAR SESIÓN</a>
+        </div>
+    </header>
     <div>
-        <h2>Estadísticas de Pacientes Atendidos</h2>
+        <h1>Estadísticas</h1>
+        <div class="estadisticas">
+            <h4>Búsqueda por Rango de Fechas</h4>
+            <form action="{{ url_for('estadisticas') }}" method="POST">
+                <div>
+                    <div>
+                        <label for="fecha_inicio">Desde:</label>
+                        <input type="date" id="fecha_inicio" name="fecha_inicio" value="{{ fecha_inicio if fecha_inicio }}">
+                    </div>
+                    <div>
+                        <label for="fecha_fin">Hasta:</label>
+                        <input type="date" id="fecha_fin" name="fecha_fin" value="{{ fecha_fin if fecha_fin }}">
+                    </div>
+                    <div>
+                        <button type="submit">Buscar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        {% if estadisticas_personalizadas_citas or estadisticas_remitidos_hospital or estadisticas_atendidos_usuario %}
+            <div class="estadisticas">
+                <div>
+                    Resultados de Búsqueda ({{ fecha_inicio if fecha_inicio else 'N/A' }} a {{ fecha_fin if fecha_fin else 'N/A' }})
+                    <button onclick="exportarExcel()">Exportar a Excel</button>
+                    <button onclick="imprimirEstadisticas()">Imprimir</button> {# Ya no se necesita el tipo en imprimirEstadisticas si junta todo #}
+                </div>
+                {% if estadisticas_personalizadas_citas %}
+                    <h4>Pacientes Atendidos por Día (Citas)</h4>
+                    <table id="estadisticas_citas" class="tableEstadisticas">
+                        <thead>
+                            <tr>
+                                <th>Fecha Cita</th>
+                                <th>Total Pacientes Atendidos</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for estadistica in estadisticas_personalizadas_citas %}
+                                <tr>
+                                    <td>{{ estadistica[0] }}</td>
+                                    <td>{{ estadistica[1] }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <p>No hay datos de pacientes atendidos por día para el rango de fechas seleccionado.</p>
+                {% endif %}
 
-        <section class="listaPacienteTable">
-            <h3>Pacientes Atendidos por Semana</h3>
-            {% if estadisticas_semana %}
-            <table>
-                <thead>
-                    <tr>
-                        <th>Año</th>
-                        <th>Semana del Año</th>
-                        <th>Total Pacientes</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for stat in estadisticas_semana %}
-                    <tr>
-                        <td>{{ stat[0] }}</td>
-                        <td>{{ stat[1] }}</td>
-                        <td>{{ stat[2] }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-            {% else %}
-            <p>No hay datos de pacientes atendidos por semana.</p>
-            {% endif %}
+                {% if estadisticas_remitidos_hospital %}
+                    <h4>Pacientes Remitidos por Hospital</h4>
+                    <table id="estadisticas_hospitales" class="tableEstadisticas">
+                        <thead>
+                            <tr>
+                                <th>Hospital</th>
+                                <th>Total Pacientes Remitidos</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for hospitales in estadisticas_remitidos_hospital %}
+                                <tr>
+                                    <td>{{ hospitales[0] }}</td>
+                                    <td>{{ hospitales[1] }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <p>No hay datos de pacientes remitidos por hospital para el rango de fechas seleccionado.</p>
+                {% endif %}
 
-            <h3>Pacientes Atendidos por Mes</h3>
-            {% if estadisticas_mes %}
-            <table>
-                <thead>
-                    <tr>
-                        <th>Año</th>
-                        <th>Mes</th>
-                        <th>Total Pacientes</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for stat in estadisticas_mes %}
-                    <tr>
-                        <td>{{ stat[0] }}</td>
-                        <td>{{ stat[1] }}</td>
-                        <td>{{ stat[2] }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-            {% else %}
-            <p>No hay datos de pacientes atendidos por mes.</p>
-            {% endif %}
+                {% if estadisticas_atendidos_usuario %}
+                    <h4>Pacientes Atendidos por Usuario</h4>
+                    <table id="estadisticas_usuarios" class="tableEstadisticas">
+                        <thead>
+                            <tr>
+                                <th>Usuario</th>
+                                <th>Total Pacientes Atendidos</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for usuarios in estadisticas_atendidos_usuario %}
+                                <tr>
+                                    <td>{{ usuarios[0] }}</td>
+                                    <td>{{ usuarios[1] }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <p>No hay datos de pacientes atendidos por usuario para el rango de fechas seleccionado.</p>
+                {% endif %}
 
-            <h3>Pacientes Atendidos por Semestre</h3>
-            {% if estadisticas_semestre %}
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th>Año</th>
-                        <th>Semestre</th>
-                        <th>Total Pacientes</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for stat in estadisticas_semestre %}
-                    <tr>
-                        <td>{{ stat[0] }}</td>
-                        <td>{{ stat[1] }}</td>
-                        <td>{{ stat[2] }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-            {% else %}
-            <p>No hay datos de pacientes atendidos por semestre.</p>
-            {% endif %}
-
-            <h3>Pacientes Atendidos por Año</h3>
-            {% if estadisticas_anio %}
-            <table>
-                <thead>
-                    <tr>
-                        <th>Año</th>
-                        <th>Total Pacientes</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for stat in estadisticas_anio %}
-                    <tr>
-                        <td>{{ stat[0] }}</td>
-                        <td>{{ stat[1] }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-            {% else %}
-            <p>No hay datos de pacientes atendidos por año.</p>
-            {% endif %}
-            <div>
-                <h3>Descargar Reportes</h3>
-                <button>
-                    <a href="">Año</a>
-                </button>
-                <button>
-                    <a href="">Semana</a>
-                </button>
-                <button>
-                    <a href="">Mes</a>
-                </button>
-                <button>
-                    <a href="">Semestre</a>
-                </button>
             </div>
-        </section>
+        {% else %}
+            <p>No hay datos disponibles para el rango de fechas seleccionado.</p>
+        {% endif %}
     </div>    
 </div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+<script>
+    function exportarExcel() {
+        // Create a new workbook
+        const wb = XLSX.utils.book_new();
+
+        // Add sheet for "Pacientes Atendidos por Día"
+        const tablaCitas = document.getElementById('estadisticas_citas');
+        if (tablaCitas) {
+            const wsCitas = XLSX.utils.table_to_sheet(tablaCitas);
+            XLSX.utils.book_append_sheet(wb, wsCitas, "Pacientes por Día");
+        }
+
+        // Add sheet for "Pacientes Remitidos por Hospital"
+        const tablaHospitales = document.getElementById('estadisticas_hospitales');
+        if (tablaHospitales) {
+            const wsHospitales = XLSX.utils.table_to_sheet(tablaHospitales);
+            XLSX.utils.book_append_sheet(wb, wsHospitales, "Remitidos por Hospital");
+        }
+
+        // Add sheet for "Pacientes Atendidos por Usuario"
+        const tablaUsuarios = document.getElementById('estadisticas_usuarios');
+        if (tablaUsuarios) {
+            const wsUsuarios = XLSX.utils.table_to_sheet(tablaUsuarios);
+            XLSX.utils.book_append_sheet(wb, wsUsuarios, "Atendidos por Usuario");
+        }
+        
+        // Write the workbook to a file
+        if (wb.SheetNames.length > 0) {
+            XLSX.writeFile(wb, 'estadisticas.xlsx');
+        } else {
+            alert('No hay datos para exportar.');
+        }
+    }
+
+    function imprimirEstadisticas() {
+        let printContent = '';
+        let title = 'Estadísticas';
+
+        // Collect content from all relevant tables
+        const tablaCitas = document.getElementById('estadisticas_citas');
+        if (tablaCitas) {
+            printContent += '<h4>Pacientes Atendidos por Día (Citas)</h4>' + tablaCitas.outerHTML;
+        }
+
+        const tablaHospitales = document.getElementById('estadisticas_hospitales');
+        if (tablaHospitales) {
+            printContent += '<h4>Pacientes Remitidos por Hospital</h4>' + tablaHospitales.outerHTML;
+        }
+
+        const tablaUsuarios = document.getElementById('estadisticas_usuarios');
+        if (tablaUsuarios) {
+            printContent += '<h4>Pacientes Atendidos por Usuario</h4>' + tablaUsuarios.outerHTML;
+        }
+
+        if (!printContent) {
+            alert('No hay datos para imprimir.');
+            return;
+        }
+
+        const printWindow = window.open('', '', 'height=600,width=800');
+        printWindow.document.write('<html><head><title>' + title + '</title>');
+        printWindow.document.write('<style>');
+        printWindow.document.write('body { font-family: sans-serif; }');
+        printWindow.document.write('table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }');
+        printWindow.document.write('th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }');
+        printWindow.document.write('th { background-color: #f2f2f2; }');
+        printWindow.document.write('</style>');
+        printWindow.document.write('</head><body>');
+        printWindow.document.write('<h1>' + title + '</h1>');
+        printWindow.document.write(printContent);
+        printWindow.document.write('</body></html>');
+        printWindow.document.close();
+        printWindow.print();
+    }
+</script>
 {% endblock %}
