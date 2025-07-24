@@ -45,8 +45,21 @@ class modelsPaciente():
                 print(f"Error en el registro del paciente: {ex}")
                 self.mysql.connection.rollback()
                 raise Exception(ex)
-
+    
+    def check_cedula(self, nroCedula):
         
+        try:
+            cursor = self.mysql.connection.cursor() 
+            query = "SELECT COUNT(*) FROM paciente WHERE nroCedula = %s" 
+            cursor.execute(query, (nroCedula,))
+            count = cursor.fetchone()[0]
+            cursor.close()
+            return count > 0
+        except Exception as e:
+            print(f"Error al verificar cédula existente: {e}")
+            return False # En caso de error, asumimos que no existe para evitar bloqueos
+
+
     def modificarPacientes(self,recibe_tratamiento_status, especificacion_tratamiento, 
                            fecha_tratamiento, medicacion, idPaciente):
         try:
@@ -203,19 +216,19 @@ class modelsPaciente():
             print(f"Error al obtener la cita por ID: {str(e)}")
             return None
         
-    def contarPacientesAtendidosPorRangoFechas(self, fecha_inicio, fecha_fin):
+    def contarPacientesAtendidosPorRangoFechas(self, fecha_inicio_dt, fecha_fin_dt):
         try:
             cursor = self.mysql.connection.cursor()
             query = """
                 SELECT
-                    DATE(fechaCita) AS fecha_cita,
+                    DATE(fechaConsulta) AS fecha_consulta,
                     COUNT(DISTINCT idPaciente) AS total_pacientes
-                FROM citas
-                WHERE fechaCita BETWEEN %s AND %s
-                GROUP BY DATE(fechaCita)
-                ORDER BY fecha_cita ASC;
+                FROM paciente
+                WHERE fechaConsulta BETWEEN %s AND %s
+                GROUP BY DATE(fechaConsulta)
+                ORDER BY fecha_consulta ASC;
             """
-            cursor.execute(query, (fecha_inicio, fecha_fin))
+            cursor.execute(query, (fecha_inicio_dt, fecha_fin_dt))
             resultados = cursor.fetchall()
             cursor.close()
             return resultados
@@ -223,25 +236,25 @@ class modelsPaciente():
             print(f"Error al obtener estadísticas por rango de fechas: {str(e)}")
             return []
         
-    def contarPacientesRemitidosPorHospital(self, fecha_inicio, fecha_fin):
+    def contarPacientesRemitidosPorHospital(self, fecha_inicio_dt, fecha_fin_dt):
         try:
             cursor = self.mysql.connection.cursor()
             query = """
-                SELECT
-                    h.nombreHospital,
+                SELECT 
+                    p.remitido_por_id,
                     COUNT(p.idPaciente) AS total_pacientes_remitidos
-                FROM
-                    paciente p
-                JOIN
-                    hospitales h ON p.remitido_por_id = h.id_hospital
-                WHERE
-                    p.fechaConsulta BETWEEN %s AND %s
-                GROUP BY
-                    h.nombreHospital
-                ORDER BY
+                FROM 
+                    paciente p 
+                LEFT JOIN 
+                    hospitales h ON p.remitido_por_id = h.id_hospital 
+                WHERE 
+                    fechaConsulta BETWEEN %s AND %s
+                GROUP BY 
+                    p.remitido_por_id 
+                ORDER BY 
                     total_pacientes_remitidos DESC;
             """
-            cursor.execute(query, (fecha_inicio, fecha_fin))
+            cursor.execute(query, (fecha_inicio_dt, fecha_fin_dt))
             resultados = cursor.fetchall()
             cursor.close()
             return resultados
@@ -249,25 +262,25 @@ class modelsPaciente():
             print(f"Error al contar pacientes remitidos por hospital: {str(e)}")
             return []
 
-    def contarPacientesAtendidosPorUsuario(self, fecha_inicio, fecha_fin):
+    def contarPacientesAtendidosPorUsuario(self, fecha_inicio_dt, fecha_fin_dt):
         try:
             cursor = self.mysql.connection.cursor()
             query = """
-                SELECT
-                    u.fullname,
-                    COUNT(p.idPaciente) AS total_pacientes_atendidos
-                FROM
-                    paciente p
-                JOIN
-                    usuarios u ON p.elaborado_por_id = u.id_usuarios
-                WHERE
-                    p.fechaConsulta BETWEEN %s AND %s
-                GROUP BY
-                    u.fullname
-                ORDER BY
-                    total_pacientes_atendidos DESC;
+                SELECT 
+                    p.elaborado_por_id,
+                    COUNT(p.idPaciente) AS total_pacientes
+                FROM 
+                    paciente p 
+                LEFT JOIN 
+                    usuarios u ON p.elaborado_por_id = u.id_usuarios 
+                WHERE 
+                    fechaConsulta BETWEEN %s AND %s
+                GROUP BY 
+                    p.elaborado_por_id 
+                ORDER BY 
+                    total_pacientes DESC;
             """
-            cursor.execute(query, (fecha_inicio, fecha_fin))
+            cursor.execute(query, (fecha_inicio_dt, fecha_fin_dt))
             resultados = cursor.fetchall()
             cursor.close()
             return resultados

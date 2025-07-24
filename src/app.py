@@ -203,6 +203,13 @@ def registroPacientes():
             next_id = last_id + 1
             return render_template('registroPaciente.html', next_id=next_id, usuarios=usuarios_disponibles, hospitales=hospitales_disponibles, form_data=request.form)
 
+        # --- Validación de cédula existente ---
+        if paciente_model.check_cedula(nroCedula):
+            flash(f"Error: El número de cédula {nroCedula} ya se encuentra registrado para otro paciente.", "error")
+            last_id = paciente_model.get_last_paciente_id()
+            next_id = last_id + 1 if last_id is not None else 1
+            return render_template('registroPaciente.html', next_id=next_id, usuarios=usuarios_disponibles, hospitales=hospitales_disponibles, form_data=request.form)
+
         # --- 2. Obtener Datos de Enfermedades Infecciosas ---
         citomegalovirus_status = request.form.get('citomegalovirus_status')
         tuberculosis_status = request.form.get('tuberculosis_status')
@@ -444,11 +451,9 @@ def eliminar_cita(idCita):
 def estadisticas():
     paciente_model = modelsPaciente(db)
 
-    # Valores por defecto para el rango de fechas
     fecha_inicio = None
     fecha_fin = None
 
-    # Retrieve all available hospitals and users for dropdowns
     hospitales_disponibles = modelsHospitales(db).get_all_hospitales()
     usuarios_disponibles = modelsUser(db).get_all_users()
 
@@ -462,8 +467,8 @@ def estadisticas():
 
         if fecha_inicio_str and fecha_fin_str:
             try:
-                fecha_inicio_dt = datetime.strptime(fecha_inicio_str, '%Y-%m-%d').date()
-                fecha_fin_dt = datetime.strptime(fecha_fin_str, '%Y-%m-%d').date()
+                fecha_inicio_dt = datetime.strptime(fecha_inicio_str, '%Y-%m-%d')
+                fecha_fin_dt = datetime.strptime(fecha_fin_str, '%Y-%m-%d')
 
                 if fecha_inicio_dt > fecha_fin_dt:
                     flash("La fecha de inicio no puede ser posterior a la fecha de fin.", "error")

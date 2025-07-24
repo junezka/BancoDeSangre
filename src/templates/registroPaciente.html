@@ -38,38 +38,38 @@
             <section class="formSection">    
                 <div>
                     <label for="idPaciente">N° de historia</label>
-                    <input type="text" id="idPaciente" name="idPaciente_display" value="{{ next_id }}" style="text-align: center" disabled ><br><br>
+                    <input type="text" id="idPaciente" name="idPaciente_display" value="{{ next_id }}" style="text-align: center" disabled >
                 </div>
                 <div>
-                    <label for="fechaConsulta">Fecha</label>
-                    <input type="date" name="fechaConsulta" placeholder="Fecha Consulta" required><br><br> 
+                    <label for="fechaConsulta">Fecha de Registro</label><br>
+                    <input type="date" name="fechaConsulta" placeholder="Fecha Consulta" required>
                 </div>
                 <div>
-                    <label for="nombre">Nombre</label>
-                    <input type="text" name="nombre" placeholder="Nombre del Paciente" required><br><br>
+                    <label for="nombre">Nombre</label><br>
+                    <input type="text" name="nombre" placeholder="Nombre del Paciente" required>
                 </div>
                 <div>
-                    <label for="apellido">Apellido</label>
-                    <input type="text" name="apellido" placeholder="Apellido del Paciente" required><br><br>
+                    <label for="apellido">Apellido</label><br>
+                    <input type="text" name="apellido" placeholder="Apellido del Paciente" required>
                 </div>
                 <div>
-                    <label for="cedula">Nro de Cedula</label>
-                    <input type="number" name="nroCedula" placeholder="Numero de Cedula" required><br><br>
+                    <label for="cedula">Nro de Cedula</label><br>
+                    <input type="number" name="nroCedula" placeholder="Numero de Cedula" required>
                 </div>
                 <div>
                     <label for="genero" required>Género</label><br>
                     <input type="radio" id="femenino" name="genero" value="Femenino" required>
                     <label for="femenino">Femenino</label><br>
                     <input type="radio" id="masculino" name="genero" value="Masculino">
-                    <label for="masculino">Masculino</label><br><br>
+                    <label for="masculino">Masculino</label>
                 </div>
                 <div>
-                    <label for="fechaNacimiento">Fecha de Nacimiento</label>
-                    <input type="date" name="fechaNacimiento" placeholder="Fecha de Nacimiento" required><br><br>
+                    <label for="fechaNacimiento">Fecha de Nacimiento</label><br>
+                    <input type="date" name="fechaNacimiento" placeholder="Fecha de Nacimiento" required>
                 </div>
                 <div>
-                    <label for="direccion">Direccion</label>
-                    <textarea name="direccion" placeholder="Ingrese la direccion del paciente" required></textarea><br>
+                    <label for="direccion">Direccion</label><br>
+                    <textarea name="direccion" placeholder="Ingrese la direccion del paciente" required></textarea>
                 </div>
                 <div>
                     <label for="estCiv">Estado Civil</label><br>
@@ -85,11 +85,11 @@
                     <label for="viudo">Viudo</label><br>
                 </div>
                 <div>
-                    <label for="diagnostico">Diagnostico Inicial o Referencia</label>
+                    <label for="diagnostico">Diagnostico</label>
                     <textarea name="diagnostico" required></textarea><br>
                 </div>
                 <div>
-                    <label for="remision">Remitido por</label>
+                    <label for="remision">Remitido por</label><br>
                     <select id="remision" name="remision" required>
                         <option value="">Selecciona un hospital</option>
                         {% for nombreHospital in hospitales %}
@@ -98,7 +98,7 @@
                     </select>
                 </div>
                 <div>
-                    <label for="elaborado">Elaborado por</label>
+                    <label for="elaborado">Elaborado por</label><br>
                     <select id="elaborado" name="elaborado" required>
                         <option value="">Selecciona un usuario</option>
                         {% for usuario in usuarios %}
@@ -121,7 +121,7 @@
                     </select>
                 </div>
                 <div>
-                    <label for="tuberculosis_status">Tuberculosis</label>
+                    <label for="tuberculosis_status">Tuberculósis</label><br>
                     <select name="tuberculosis_status" id="tuberculosis_status">
                         <option value="">Seleccione una opcion</option>
                         <option value="Activo">Activo</option>
@@ -129,7 +129,7 @@
                     </select>
                 </div>
                 <div>
-                    <label for="hepatitis_status">Hepatitis</label>
+                    <label for="hepatitis_status">Hepatitis</label><br>
                     <select name="hepatitis_status" id="hepatitis_status">
                         <option value="">Seleccione una opcion</option>
                         <option value="Activo">Activo</option>
@@ -137,11 +137,11 @@
                     </select>
                 </div>
                 <div>
-                    <label for="hepatitis_tipo">Hepatitis tipo</label>
+                    <label for="hepatitis_tipo">Hepatitis tipo</label><br>
                     <input type="text" name="hepatitis_tipo">
                 </div>
                 <div>
-                    <label for="varicella_zoster_status">Virus Varicella Zoster</label>
+                    <label for="varicella_zoster_status">Virus Varicella Zoster</label><br>
                     <select name="varicella_zoster_status" id="varicella_zoster_status">
                         <option value="">Seleccione una opcion</option>
                         <option value="Activo">Activo</option>
@@ -149,7 +149,7 @@
                     </select>
                 </div>
                 <div>
-                    <label for="vih_status">VIH</label>
+                    <label for="vih_status">VIH</label><br>
                     <select name="vih_status" id="vih_status">
                         <option value="">Seleccione una opcion</option>
                         <option value="Activo">Activo</option>
@@ -157,7 +157,7 @@
                     </select>
                 </div>
                 <div>
-                    <label for="otros_infecciosas_status">Otros</label>
+                    <label for="otros_infecciosas_status">Otros</label><br>
                     <select name="otros_infecciosas_status" id="otros_infecciosas_status">
                         <option value="">Seleccione una opcion</option>
                         <option value="Activo">Activo</option>
@@ -165,17 +165,17 @@
                     </select>
                 </div>
                 <div>
-                    <label for="especificar_otros_infecciosas">Especifique</label>
+                    <label for="especificar_otros_infecciosas">Especifique</label><br>
                     <input type="text" name="especificar_otros_infecciosas">
                 </div>           
             </section>
 
             <br>
 
-            <h2>Antecedentes Personales Patologicos</h2>
+            <h2>Antecedentes Personales Patológicos</h2>
             <section class="formSection">
                 <div>
-                    <label for="alergia_medicamento_status">Alergia a algun medicamento</label>
+                    <label for="alergia_medicamento_status">Alergia a algun medicamento</label><br>
                     <select name="alergia_medicamento_status" id="alergia_medicamento_status">
                         <option value="">Seleccione una opcion</option>
                         <option value="Si">Si</option>
@@ -183,11 +183,11 @@
                     </select>
                 </div>
                 <div>
-                    <label for="especificar_alergia">Especifique</label>
+                    <label for="especificar_alergia">Especifique</label><br>
                     <input type="text" name="especificar_alergia" id="especificar_alergia">
                 </div>         
                 <div>
-                    <label for="diabetes_status">Diabetes</label>
+                    <label for="diabetes_status">Diabetes</label><br>
                     <select name="diabetes_status" id="diabetes_status">
                         <option value="">Seleccione una opcion</option>
                         <option value="Si">Si</option>
@@ -195,7 +195,7 @@
                     </select>
                 </div>
                 <div>
-                    <label for="hipertension_arterial_status">Hipertension Arterial</label>
+                    <label for="hipertension_arterial_status">Hipertension Arterial</label><br>
                     <select name="hipertension_arterial_status" id="hipertension_arterial_status">
                         <option value="">Seleccione una opcion</option>
                         <option value="Si">Si</option>

@@ -59,16 +59,16 @@
                 <tbody>
                     <tr>
                         <td>{{ paciente_encontrado[0] }}</td> {# idPaciente #}
-                        <td>{{ paciente_encontrado[1] }}</td> {# nombre #}
-                        <td>{{ paciente_encontrado[2] }}</td> {# apellido #}
-                        <td>{{ paciente_encontrado[3] }}</td> {# nroCedula #}
-                        <td>{{ paciente_encontrado[4] }}</td> {# genero #}
-                        <td>{{ paciente_encontrado[5] | default('N/A') }}</td> {# fechaNacimiento #}
-                        <td>{{ paciente_encontrado[6] | default('N/A') }}</td> {# direccion #}
-                        <td>{{ paciente_encontrado[7] | default('N/A') }}</td> {# estado_civil #}
-                        <td>{{ paciente_encontrado[8] | default('N/A') }}</td> {# diagnostico_inicial #}
-                        <td>{{ paciente_encontrado[9] | default('N/A') }}</td> {# remitido_por (this would be an ID, consider showing the name) #}
-                        <td>{{ paciente_encontrado[10] | default('N/A') }}</td> {# elaborado_por_id (this would be an ID, consider showing the name) #}
+                        <td>{{ paciente_encontrado[2] }}</td> {# nombre #}
+                        <td>{{ paciente_encontrado[3] }}</td> {# apellido #}
+                        <td>{{ paciente_encontrado[4] }}</td> {# nroCedula #}
+                        <td>{{ paciente_encontrado[5] }}</td> {# genero #}
+                        <td>{{ paciente_encontrado[6] | default('N/A') }}</td> {# fechaNacimiento #}
+                        <td>{{ paciente_encontrado[7] | default('N/A') }}</td> {# direccion #}
+                        <td>{{ paciente_encontrado[8] | default('N/A') }}</td> {# estado_civil #}
+                        <td>{{ paciente_encontrado[9] | default('N/A') }}</td> {# diagnostico_inicial #}
+                        <td>{{ paciente_encontrado[10] | default('N/A') }}</td> {# remitido_por (this would be an ID, consider showing the name) #}
+                        <td>{{ paciente_encontrado[11] | default('N/A') }}</td> {# elaborado_por_id (this would be an ID, consider showing the name) #}
                     </tr>
                 </tbody>
             </table>
@@ -85,7 +85,6 @@
                     <th>Especifique</th>
                 </thead>
                 <tbody>
-                    <td>{{ paciente_encontrado[11] | default('N/A') }}</td>
                     <td>{{ paciente_encontrado[12] | default('N/A') }}</td>
                     <td>{{ paciente_encontrado[13] | default('N/A') }}</td>
                     <td>{{ paciente_encontrado[14] | default('N/A') }}</td>
@@ -93,6 +92,7 @@
                     <td>{{ paciente_encontrado[16] | default('N/A') }}</td>
                     <td>{{ paciente_encontrado[17] | default('N/A') }}</td>
                     <td>{{ paciente_encontrado[18] | default('N/A') }}</td>
+                    <td>{{ paciente_encontrado[19] | default('N/A') }}</td>
                 </tbody>
             </table>
             <table class="listaPacienteTable">
@@ -104,10 +104,10 @@
                     <th>Hipertension Arterial</th>
                 </thead>
                 <tbody>
-                    <td>{{ paciente_encontrado[19] | default('N/A') }}</td>
                     <td>{{ paciente_encontrado[20] | default('N/A') }}</td>
-                    <td>{{ paciente_encontrado[21] | default('N/A') }}</t>
-                    <td>{{ paciente_encontrado[22] | default('N/A') }}</td>
+                    <td>{{ paciente_encontrado[21] | default('N/A') }}</td>
+                    <td>{{ paciente_encontrado[22] | default('N/A') }}</t>
+                    <td>{{ paciente_encontrado[23] | default('N/A') }}</td>
                 </tbody>
             </table>
                 <hr> <h3>Historial de Tratamientos</h3>

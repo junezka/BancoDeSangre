@@ -38,13 +38,11 @@
         </div>
         {% if estadisticas_personalizadas_citas or estadisticas_remitidos_hospital or estadisticas_atendidos_usuario %}
             <div class="estadisticas">
-                <div>
-                    Resultados de Búsqueda ({{ fecha_inicio if fecha_inicio else 'N/A' }} a {{ fecha_fin if fecha_fin else 'N/A' }})
-                    <button onclick="exportarExcel()">Exportar a Excel</button>
-                    <button onclick="imprimirEstadisticas()">Imprimir</button> {# Ya no se necesita el tipo en imprimirEstadisticas si junta todo #}
+                <div id="estadisticas_fechas">
+                    <h3>Desde {{ fecha_inicio if fecha_inicio else 'N/A' }} hasta {{ fecha_fin if fecha_fin else 'N/A' }}</h3>
                 </div>
                 {% if estadisticas_personalizadas_citas %}
-                    <h4>Pacientes Atendidos por Día (Citas)</h4>
+                    <h4>Pacientes Atendidos por Día</h4>
                     <table id="estadisticas_citas" class="tableEstadisticas">
                         <thead>
                             <tr>
@@ -113,39 +111,38 @@
         {% else %}
             <p>No hay datos disponibles para el rango de fechas seleccionado.</p>
         {% endif %}
+            <div style="justify-self: center;">
+                <button onclick="exportarExcel()">Exportar a Excel</button>
+                <button onclick="imprimirEstadisticas()">Imprimir</button>
+            </div>
     </div>    
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
 <script>
     function exportarExcel() {
-        // Create a new workbook
         const wb = XLSX.utils.book_new();
 
-        // Add sheet for "Pacientes Atendidos por Día"
         const tablaCitas = document.getElementById('estadisticas_citas');
         if (tablaCitas) {
             const wsCitas = XLSX.utils.table_to_sheet(tablaCitas);
             XLSX.utils.book_append_sheet(wb, wsCitas, "Pacientes por Día");
         }
 
-        // Add sheet for "Pacientes Remitidos por Hospital"
         const tablaHospitales = document.getElementById('estadisticas_hospitales');
         if (tablaHospitales) {
             const wsHospitales = XLSX.utils.table_to_sheet(tablaHospitales);
             XLSX.utils.book_append_sheet(wb, wsHospitales, "Remitidos por Hospital");
         }
 
-        // Add sheet for "Pacientes Atendidos por Usuario"
         const tablaUsuarios = document.getElementById('estadisticas_usuarios');
         if (tablaUsuarios) {
             const wsUsuarios = XLSX.utils.table_to_sheet(tablaUsuarios);
             XLSX.utils.book_append_sheet(wb, wsUsuarios, "Atendidos por Usuario");
         }
         
-        // Write the workbook to a file
         if (wb.SheetNames.length > 0) {
-            XLSX.writeFile(wb, 'estadisticas.xlsx');
+            XLSX.writeFile(wb, 'Estadisticas.xlsx');
         } else {
             alert('No hay datos para exportar.');
         }
@@ -154,14 +151,25 @@
     function imprimirEstadisticas() {
         let printContent = '';
         let title = 'Estadísticas';
+        let totalCitas = 0;
+        let totalHospitales = 0;
+        let totalUsuarios = 0;
 
-        // Collect content from all relevant tables
-        const tablaCitas = document.getElementById('estadisticas_citas');
-        if (tablaCitas) {
-            printContent += '<h4>Pacientes Atendidos por Día (Citas)</h4>' + tablaCitas.outerHTML;
+        const fecha = document.getElementById('estadisticas_fechas');
+        if (fecha) {
+            printContent += fecha.outerHTML;
         }
 
-        const tablaHospitales = document.getElementById('estadisticas_hospitales');
+        const tablaCitas = document.getElementById('estadisticas_citas');
+        if (tablaCitas) {
+            printContent += '<h4>Pacientes Atendidos por Día</h4>' + tablaCitas.outerHTML;
+            const rows = tablaCitas.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+            for (let row of rows) {
+                totalCitas += parseInt(row.cells[1].innerText) || 0; 
+            }
+        }
+
+            const tablaHospitales = document.getElementById('estadisticas_hospitales');
         if (tablaHospitales) {
             printContent += '<h4>Pacientes Remitidos por Hospital</h4>' + tablaHospitales.outerHTML;
         }
@@ -175,21 +183,39 @@
             alert('No hay datos para imprimir.');
             return;
         }
-
         const printWindow = window.open('', '', 'height=600,width=800');
         printWindow.document.write('<html><head><title>' + title + '</title>');
         printWindow.document.write('<style>');
-        printWindow.document.write('body { font-family: sans-serif; }');
+        printWindow.document.write('.image-container { display: flex; justify-content: space-between; align-items: center; }');
+        printWindow.document.write('body { font-family: Helvetica; }');
         printWindow.document.write('table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }');
         printWindow.document.write('th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }');
         printWindow.document.write('th { background-color: #f2f2f2; }');
         printWindow.document.write('</style>');
         printWindow.document.write('</head><body>');
+
+        // Contenedor para las imágenes
+        printWindow.document.write('<div class="image-container">');
+        printWindow.document.write('<img src="' + "{{ url_for('static', filename='img/mpps.png') }}" + '" width="30%">');
+        printWindow.document.write('<img src="' + "{{ url_for('static', filename='img/Logo.png') }}" + '" width="10%">');
+        printWindow.document.write('</div>');
+
         printWindow.document.write('<h1>' + title + '</h1>');
         printWindow.document.write(printContent);
+
+        // Mostrar los totales
+        printWindow.document.write('<div id="totales" style="margin-top: 20px; text-align: center;">');
+        printWindow.document.write('<h2>Total Pacientes Atendidos: ' + totalCitas + '</h2>');
+        printWindow.document.write('</div>');
+
         printWindow.document.write('</body></html>');
         printWindow.document.close();
-        printWindow.print();
-    }
+
+        setTimeout(() => {
+            printWindow.print();
+        }, 500);
+}
+
+
 </script>
 {% endblock %}
