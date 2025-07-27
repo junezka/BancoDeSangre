@@ -16,14 +16,15 @@
         <a href="{{ url_for('logout') }}">CERRAR SESION</a>
     </div>
     </header>
+
     <div class="sectionForm">
         <h2>Gestión de Citas</h2>
-        <div>
+        <section>
             {% with messages = get_flashed_messages(with_categories=true) %}
                 {% if messages %}
                 <br>
                 {% for category, message in messages %}
-                    <div role="alert" class="alert alert-{{ category }}" style="background-color: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; padding: 10px; margin-bottom: 15px; border-radius: 5px;">
+                    <div role="alert" style="background-color: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; padding: 10px; margin-bottom: 15px; border-radius: 5px;">
                         <strong>{{ message }}</strong>
                     </div>
                 {% endfor %}
@@ -41,11 +42,11 @@
                 <label for="idPaciente">ID de Historia</label>
                 <input type="text" id="idPacienteDisplay" value="{{ paciente_encontrado[0] }}" style="text-align: center" disabled><br>
                 <label for="nombre">Nombre</label>
-                <input type="text" id="nombre" value="{{ paciente_encontrado[1] }}" style="text-align: center" disabled><br>
+                <input type="text" id="nombre" value="{{ paciente_encontrado[2] }}" style="text-align: center" disabled><br>
                 <label for="apellido">Apellido</label>
-                <input type="text" id="apellido" value="{{ paciente_encontrado[2] }}" style="text-align: center" disabled><br>
+                <input type="text" id="apellido" value="{{ paciente_encontrado[3] }}" style="text-align: center" disabled><br>
                 <label for="nroCedula">Cédula</label>
-                <input type="text" id="nroCedula" value="{{ paciente_encontrado[3] }}" style="text-align: center" disabled><br>
+                <input type="text" id="nroCedula" value="{{ paciente_encontrado[4] }}" style="text-align: center" disabled><br>
             </div>
             <div class="listaCitas">
                 <section>
@@ -73,7 +74,7 @@
                     </form>
                 </section>
                 <section>
-                    <h3>Citas Programadas para {{ paciente_encontrado[1] }} {{ paciente_encontrado[2] }}</h3>
+                    <h3>Citas Programadas para {{ paciente_encontrado[2] }} {{ paciente_encontrado[3] }}</h3>
                     {% if paciente_citas %}
                     <table>
                         <thead>
@@ -101,11 +102,10 @@
                     {% endif %}
 
                     {% elif busqueda_realizada and not paciente_encontrado %}
-                    <p>No se encontró el paciente.</p>
                     {% endif %}
                 </section>
             </div>
-        </div>
+        </section>
     </div>    
 </div>
 {% endblock %}

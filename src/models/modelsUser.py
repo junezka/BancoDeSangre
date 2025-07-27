@@ -43,7 +43,6 @@ class modelsUser:
                         remaining_attempts = self.MAX_LOGIN_ATTEMPTS - new_attempts
                         return {"success": False, "message": f"Contraseña incorrecta. Te quedan {remaining_attempts} intentos."}
             else:
-                # Usuario no encontrado (esto es importante para no devolver None)
                 return {"success": False, "message": "Usuario o contraseña incorrectos."}
         except Exception as ex:
             print(f"Error en login: {ex}")
@@ -80,7 +79,6 @@ class modelsUser:
             cursor.close()
 
             if row is not None:
-                # Pasar todos los argumentos requeridos por el constructor de Usuarios
                 return Usuarios(row[0], row[1], row[2], row[3], row[4], row[5])
             else:
                 return None
@@ -93,9 +91,8 @@ class modelsUser:
             cursor = self.mysql.connection.cursor()
             hashed_password = generate_password_hash(password)
             
-            # La consulta correcta para insertar un nuevo usuario con los nuevos campos
             query = """ INSERT INTO usuarios (usuario, password, fullname, failed_attempts, is_locked)
-                VALUES (%s, %s, %s, 0, FALSE)""" # Por defecto, 0 intentos y no bloqueado
+                VALUES (%s, %s, %s, 0, FALSE)""" 
             
             cursor.execute(query, (usuario,hashed_password, fullname,))
             self.mysql.connection.commit()
@@ -123,7 +120,7 @@ class modelsUser:
     def toggle_user_lock_status(self, id_usuarios, current_status):
         try:
             cursor = self.mysql.connection.cursor()
-            new_status = not current_status # Invertir el estado (si estaba bloqueado, ahora activo; si activo, ahora bloqueado)
+            new_status = not current_status 
 
             # La consulta SQL para actualizar el estado de bloqueo y resetear intentos
             sql = "UPDATE usuarios SET is_locked = %s, failed_attempts = 0 WHERE id_usuarios = %s"
@@ -134,4 +131,4 @@ class modelsUser:
             return True 
         except Exception as ex:
             self.mysql.connection.rollback() 
-            return False # Indica que la operación falló
+            return False

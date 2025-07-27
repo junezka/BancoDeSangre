@@ -1,5 +1,5 @@
 # models/modelsPaciente.py
-from .entities.paciente import Paciente # Asegúrate de que esta importación es correcta
+from .entities.paciente import Paciente
 
 class modelsPaciente():
     def __init__(self, mysql_instance):
@@ -13,7 +13,6 @@ class modelsPaciente():
             try:
                 cursor = self.mysql.connection.cursor()
 
-                # The query to insert a new patient with ALL fields
                 query = """
                     INSERT INTO paciente(
                         fechaConsulta, nombre, apellido, nroCedula, genero, fechaNacimiento, direccion,
@@ -25,17 +24,14 @@ class modelsPaciente():
                     VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                 """
 
-                # The data must be passed in the same order as the columns in the query.
                 cursor.execute(query, (fechaConsulta,
                     nombre, apellido, int(nroCedula), genero, fechaNacimiento, direccion,
                     estado_civil, diagnostico_inicial, remitido_por_id, elaborado_por_id,
                     citomegalovirus_status, tuberculosis_status, hepatitis_status, hepatitis_tipo,
                     varicella_zoster_status, vih_status, otros_infecciosas_status, especificar_otros_infecciosas,
-                    alergia_a_medicamento, especificar_alergia, diabetes, hipertension_arterial # ADD fechaConsulta here
-                ))
+                    alergia_a_medicamento, especificar_alergia, diabetes, hipertension_arterial))
                 self.mysql.connection.commit()
 
-                # Obtener el ID del paciente recién insertado para enlazar el tratamiento
                 last_inserted_id = cursor.lastrowid
 
                 cursor.close()

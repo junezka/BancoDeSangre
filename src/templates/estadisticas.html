@@ -152,8 +152,6 @@
         let printContent = '';
         let title = 'Estadísticas';
         let totalCitas = 0;
-        let totalHospitales = 0;
-        let totalUsuarios = 0;
 
         const fecha = document.getElementById('estadisticas_fechas');
         if (fecha) {
@@ -183,7 +181,8 @@
             alert('No hay datos para imprimir.');
             return;
         }
-        const printWindow = window.open('', '', 'height=600,width=800');
+
+        const printWindow = window.open('', '', 'height=600,width=800,position=fixed,top=50%,left=50%,transform: translate(-50%, -50%);');
         printWindow.document.write('<html><head><title>' + title + '</title>');
         printWindow.document.write('<style>');
         printWindow.document.write('.image-container { display: flex; justify-content: space-between; align-items: center; }');
@@ -192,15 +191,16 @@
         printWindow.document.write('th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }');
         printWindow.document.write('th { background-color: #f2f2f2; }');
         printWindow.document.write('</style>');
-        printWindow.document.write('</head><body>');
+        printWindow.document.write('</head>');
+        printWindow.document.write('<body>');
 
-        // Contenedor para las imágenes
+            // Contenedor para las imágenes
         printWindow.document.write('<div class="image-container">');
-        printWindow.document.write('<img src="' + "{{ url_for('static', filename='img/mpps.png') }}" + '" width="30%">');
-        printWindow.document.write('<img src="' + "{{ url_for('static', filename='img/Logo.png') }}" + '" width="10%">');
+        printWindow.document.write('<img src="/static/img/mpps.png" width="30%">');
+        printWindow.document.write('<img src="/static/img/Logo.png" width="10%">');
         printWindow.document.write('</div>');
 
-        printWindow.document.write('<h1>' + title + '</h1>');
+        printWindow.document.write('<h1>' + title + '<h2>Banco Municipal de Sangre</h2>' + '</h1>');
         printWindow.document.write(printContent);
 
         // Mostrar los totales
@@ -213,7 +213,7 @@
 
         setTimeout(() => {
             printWindow.print();
-        }, 500);
+        }, 1000);
 }
 
 

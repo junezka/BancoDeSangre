@@ -24,7 +24,7 @@
                 {% if messages %}
                     <br>
                     {% for message in messages %}
-                        <div role="alert" style="background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; padding: 10px; margin-bottom: 15px; border-radius: 5px;">
+                        <div role="alert" style="background-color: hsl(198, 70%, 91%); color: hsl(226, 61%, 28%); border: 1px solid #ffffff; padding: 10px; margin-bottom: 15px; border-radius: 5px;">
                             <strong>{{ message }}</strong>
                         </div>
                     {% endfor %}
@@ -43,7 +43,6 @@
             <table class="busquedaPaciente">
                 <thead>
                     <tr>
-                        <th>ID</th>
                         <th>Usuario</th>
                         <th>Nombre Completo</th>
                         <th>Estado</th>
@@ -53,7 +52,6 @@
                 <tbody>
                     {% for usuario in all_users %}
                     <tr>
-                        <td>{{ usuario[0] }}</td> {# id_usuarios #}
                         <td>{{ usuario[1] }}</td> {# usuario #}
                         <td>{{ usuario[2] }}</td> {# fullname #}
                         <td>

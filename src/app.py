@@ -126,7 +126,6 @@ def calendario():
         year = now.year
         month = now.month
 
-    # Asegurarse de que el mes esté en el rango correcto
     if month < 1:
         month = 12
         year -= 1
@@ -145,7 +144,7 @@ def calendario():
     day_names = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"]
 
     # Obtener todas las citas para el mes actual del calendario
-    todas_las_citas_mes = paciente_model.obtenerTodasLasCitas() # Obtener todas las citas
+    todas_las_citas_mes = paciente_model.obtenerTodasLasCitas() 
     
     # Filtrar citas para el mes y año actual del calendario
     citas_para_calendario = [
@@ -183,7 +182,7 @@ def registroPacientes():
 
     if request.method == 'POST':
         # --- 1. Obtener Datos Personales ---
-        fechaConsulta = request.form['fechaConsulta'] # Get the current date for fechaConsulta
+        fechaConsulta = request.form['fechaConsulta'] 
         nombre = request.form['nombre']
         apellido = request.form['apellido']
         nroCedula = request.form['nroCedula']
@@ -228,7 +227,6 @@ def registroPacientes():
 
         try:
             # Registrar el paciente en la tabla 'paciente'
-            # regisroPaciente ahora devuelve el ID del paciente recién insertado
             paciente_id = paciente_model.registroPaciente(fechaConsulta, nombre, apellido, nroCedula, genero, fechaNacimiento, direccion,
                 estado_civil, diagnostico_inicial, remitido_por_id, elaborado_por_id,
                 citomegalovirus_status, tuberculosis_status, hepatitis_status, hepatitis_tipo,
@@ -246,7 +244,7 @@ def registroPacientes():
             next_id = last_id + 1
             return render_template('registroPaciente.html', next_id=next_id, usuarios=usuarios_disponibles, hospitales=hospitales_disponibles, form_data=request.form)
 
-    else: # GET request (cuando se carga la página por primera vez)
+    else: 
         last_id = paciente_model.get_last_paciente_id()
         next_id = last_id + 1
         return render_template('registroPaciente.html', next_id=next_id, usuarios=usuarios_disponibles, hospitales=hospitales_disponibles,)
@@ -259,10 +257,10 @@ def consultas():
     busqueda_realizada = False
     historial_tratamientos = None
     if request.method == 'POST':
-        busqueda = request.form['busqueda']  # Este es el valor que necesitas pasar
+        busqueda = request.form['busqueda'] 
         if busqueda:
             paciente_model = modelsPaciente(db)
-            paciente_encontrado = paciente_model.buscarPaciente(busqueda)  # Asegúrate de que solo pasas un argumento
+            paciente_encontrado = paciente_model.buscarPaciente(busqueda)  
             busqueda_realizada = True
             if paciente_encontrado:
                 historial_tratamientos = paciente_model.obtenerTratamientosPorPaciente(paciente_encontrado[0])
@@ -279,10 +277,10 @@ def tratamientos():
     paciente_encontrado = None
     busqueda_realizada = False
     if request.method == 'POST':
-        busqueda = request.form['busqueda']  # Este es el valor que necesitas pasar
+        busqueda = request.form['busqueda'] 
         if busqueda:
             paciente_model = modelsPaciente(db)
-            paciente_encontrado = paciente_model.buscarPaciente(busqueda)  # Asegúrate de que solo pasas un argumento
+            paciente_encontrado = paciente_model.buscarPaciente(busqueda) 
             busqueda_realizada = True
             if not paciente_encontrado:
                 flash("No se encontró ningún paciente con el número de historia o cédula proporcionado.")
@@ -305,7 +303,6 @@ def registrarTratamiento():
         medicacion = request.form['medicacion']
     try:
         # Registrar el paciente en la tabla 'paciente'
-        # regisroPaciente ahora devuelve el ID del paciente recién insertado
         paciente_id = paciente_model.registrarTratamiento(idPaciente, recibe_tratamiento_status,especificacion_tratamiento,fecha_tratamiento, medicacion)
         if paciente_id is None:
             return render_template('tratamientos.html', form_data=request.form)
@@ -339,7 +336,6 @@ def configuraciones():
             
             if not all([nombreHospital]):
                 flash("Por favor, complete todos los campos obligatorios para el hospital.")
-                # Cuando hay un error en POST, asegúrate de pasar 'all_users' de nuevo
                 return render_template('configuraciones.html', next_id_hospital=next_id_hospital, form_data=request.form)
 
             try:
@@ -393,22 +389,22 @@ def citas():
     busqueda_realizada = False
     paciente_citas = []
     
-    paciente_model = modelsPaciente(db) # Instanciar fuera del if para usarlo siempre
+    paciente_model = modelsPaciente(db) 
 
     if request.method == 'POST':
-        if 'busqueda' in request.form: # Si se está buscando un paciente
+        if 'busqueda' in request.form:
             busqueda = request.form['busqueda']
             if busqueda:
                 paciente_encontrado = paciente_model.buscarPaciente(busqueda)
                 busqueda_realizada = True
                 if paciente_encontrado:
                     # Si el paciente es encontrado, obtener sus citas
-                    paciente_citas = paciente_model.obtenerCitasPorPaciente(paciente_encontrado[0]) # Suponiendo que el ID está en paciente_encontrado[0]
+                    paciente_citas = paciente_model.obtenerCitasPorPaciente(paciente_encontrado[0])
                 else:
                     flash("No se encontró ningún paciente con el número de historia o cédula proporcionado.")
             else:
                 flash("Por favor, ingrese un número de historia o cédula para buscar.")
-        elif 'idPaciente' in request.form: # Si se está registrando una cita
+        elif 'idPaciente' in request.form:
             idPaciente = request.form['idPaciente']
             fechaCita = request.form['fechaCita']
             horaCita = request.form['horaCita']
@@ -417,11 +413,10 @@ def citas():
             try:
                 paciente_model.registrarCita(idPaciente, fechaCita, horaCita, motivoCita)
                 flash("Cita registrada exitosamente!", "success")
-                # Después de registrar, recargar las citas para el paciente
                 paciente_encontrado = paciente_model.buscarPaciente(idPaciente)
                 if paciente_encontrado:
                     paciente_citas = paciente_model.obtenerCitasPorPaciente(idPaciente)
-                busqueda_realizada = True # Mantener la vista de búsqueda si se acaba de registrar
+                busqueda_realizada = True 
             except Exception as e:
                 flash(f"Error al registrar la cita: {e}", "error")
                 # Si hay error, intentar re-poblar los datos del paciente si es posible
@@ -495,4 +490,4 @@ def estadisticas():
 #Se levanta en servidor local
 if __name__== '__main__':
     app.config.from_object(config['development'])
-    app.run(debug=True) # Siempre usa debug=True durante el desarrollo
+    app.run(debug=True)

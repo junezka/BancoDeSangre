@@ -17,7 +17,7 @@
         </div>
     </header>
 
-    <div class="contenedor-pos">
+    <div class="sectionForm">
         <h2>Tratamientos Pacientes</h2>
         <section>
             {% with messages = get_flashed_messages() %}
@@ -43,34 +43,34 @@
             <input type="hidden" name="idPaciente" value="{{ paciente_encontrado[0] }}">
             <div class="datosPaciente">
                 <label for="nombre">Nombre</label>
-                <input type="text" id="nombre" value="{{ paciente_encontrado[1] }}" style="text-align: center" disabled ><br>
+                <input type="text" id="nombre" value="{{ paciente_encontrado[2] }}" style="text-align: center;" disabled><br>
                 <label for="apellido">Apellido</label>
-                <input type="text" id="apellido" value="{{ paciente_encontrado[2] }}" style="text-align: center" disabled ><br>
+                <input type="text" id="apellido" value="{{ paciente_encontrado[3] }}" style="text-align: center;" disabled ><br>
                 <label for="nroCedula">Cedula</label>
-                <input type="text" id="nroCedula" value="{{ paciente_encontrado[3] }}" style="text-align: center" disabled ><br>
+                <input type="text" id="nroCedula" value="{{ paciente_encontrado[4] }}" style="text-align: center;" disabled ><br>
             </div>
             <h3>Datos del Tratamiento</h3> 
                 <section class="formSection">
-                    <div>
+                    <section>
                         <label for="recibe_tratamiento_status">Recibe tratamiento</label>
                         <select name="recibe_tratamiento_status" id="recibe_tratamiento_status" value="{{ form_data.medicacion if form_data else '' }}">
                             <option value="">Seleccione una opcion</option>
                             <option value="Si">Si</option>
                             <option value="No">No</option>
                         </select>
-                    </div>
-                    <div>
+                    </section>
+                    <section>
                         <label for="especificacion_tratamiento">Especifique</label>
                         <input type="text" name="especificacion_tratamiento" id="especificacion_tratamiento" value="{{ form_data.medicacion if form_data else '' }}">
-                    </div>
-                    <div>
+                    </section>
+                    <section>
                         <label for="fecha_tratamiento">Fecha</label>
                         <input type="date" name="fecha_tratamiento" id="fecha_tratamiento" value="{{ form_data.medicacion if form_data else '' }}">
-                    </div>
-                    <div>
+                    </section>
+                    <section>
                         <label for="medicacion">Medicación</label>
                         <input type="text" name="medicacion" id="medicacion" value="{{ form_data.medicacion if form_data else '' }}">
-                    </div>           
+                    </section>           
                 </section>
             <div class="botonesRegistro">
                 <button type="submit">Registrar Tratamiento</button>
