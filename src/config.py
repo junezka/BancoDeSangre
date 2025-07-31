@@ -1,15 +1,15 @@
-#
+import os
+
 class Config:
     SECRET_KEY = 'ec2b7f867d9cd541cd262a47d62b2970'
 
 #Configuraciones de desarrollo
 class DevelopmentConfig(Config):
     DEBUG=True
-    MYSQL_HOST = 'localhost'
-    MYSQL_USER = 'root'
-    MYSQL_PASSWORD = ''
-    MYSQL_PORT = 3306
-    MYSQL_DB = 'database_bs'
+    db_user = os.environ.get("DB_USER")
+    db_password = os.environ.get("DB_PASSWORD")
+    db_host = os.environ.get("DB_HOST")
+    db_name = os.environ.get("DB_NAME")
 
 config={
     'development':DevelopmentConfig
