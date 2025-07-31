@@ -12,62 +12,62 @@
     </header>
 </div>
 <div class="content">
-    {% with messages = get_flashed_messages() %}
-                {% if messages %}
-                    <br>
-                    {% for message in messages %}
-                        <div role="alert" style="background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; padding: 10px; margin-bottom: 15px; border-radius: 5px; text-align: center;">
-                            <strong>
-                                {{ message }}
-                            </strong>
-                        </div>
-                    {% endfor %}
-                {% endif %}
-            {% endwith %}
-    <div class="listaInicio">
-        <section>
-            <a href="{{ url_for('consultas') }}">
-            <img src="../static/img/consultas.png" alt="Img1" width="50%">
-            </a>
-            <h5>CONSULTAS</h5>
-        </section>
-        <section>
-            <a href="{{ url_for('registroPacientes') }}">
-            <img src="../static/img/Registros.png" alt="Img1" width="50%">
-            </a>
-            <h5>REGISTRO PACIENTES</h5>
-        </section>
-        <section>
-            <a href="{{ url_for('tratamientos') }}">
-            <img src="../static/img/tratamientos.png" alt="Img1" width="50%">
-            </a>
-            <h5>TRATAMIENTOS</h5>
-        </section>
-        <section>
-            <a href="{{ url_for('citas') }}">
-            <img src="../static/img/citas.png" alt="Img1" width="50%">
-            </a>
-            <h5>CITAS</h5>
-        </section>
-        <section>
-            <a href="{{ url_for('estadisticas') }}">
-            <img src="../static/img/estadisticas.png" alt="Img1" width="50%">
-            </a>
-            <h5>ESTADISTICAS</h5>
-        </section>
-        <section>
-            <a href="{{ url_for('configuraciones') }}">
-            <img src="../static/img/Configuracion.png" alt="Img1" width="50%">
-            </a>
-            <h5>CONFIGURACIONES</h5>
-        </section>
-        <section>
-            <a href="{{ url_for('calendario') }}">
-            <img src="../static/img/Calendario.png" alt="Img1" width="50%">
-            </a>
-            <h5>CALENDARIO</h5>
-        </section>
+        {% with messages = get_flashed_messages() %}
+                    {% if messages %}
+                        <br>
+                        {% for message in messages %}
+                            <div role="alert" style="background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; padding: 10px; margin-bottom: 15px; border-radius: 5px; text-align: center;">
+                                <strong>
+                                    {{ message }}
+                                </strong>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+        <div class="listaInicio">
+                <section>
+                    <a href="{{ url_for('consultas') }}">
+                    <img src="../static/img/consultas.png" alt="Img1" width="50%">
+                    </a>
+                    <h5>CONSULTAS</h5>
+                </section>
+                <section>
+                    <a href="{{ url_for('registroPacientes') }}">
+                    <img src="../static/img/Registros.png" alt="Img1" width="50%">
+                    </a>
+                    <h5>REGISTRO PACIENTES</h5>
+                </section>
+                <section>
+                    <a href="{{ url_for('tratamientos') }}">
+                    <img src="../static/img/tratamientos.png" alt="Img1" width="50%">
+                    </a>
+                    <h5>TRATAMIENTOS</h5>
+                </section>
+                <section>
+                    <a href="{{ url_for('citas') }}">
+                    <img src="../static/img/citas.png" alt="Img1" width="50%">
+                    </a>
+                    <h5>CITAS</h5>
+                </section>
+                <section>
+                    <a href="{{ url_for('estadisticas') }}">
+                    <img src="../static/img/estadisticas.png" alt="Img1" width="50%">
+                    </a>
+                    <h5>ESTADISTICAS</h5>
+                </section>
+                <section>
+                    <a href="{{ url_for('configuraciones') }}">
+                    <img src="../static/img/Configuracion.png" alt="Img1" width="50%">
+                    </a>
+                    <h5>CONFIGURACIONES</h5>
+                </section>
+                <section>
+                    <a href="{{ url_for('calendario') }}">
+                    <img src="../static/img/Calendario.png" alt="Img1" width="50%">
+                    </a>
+                    <h5>CALENDARIO</h5>
+                </section>
+        </div>
     </div>
 </div>
-
 {% endblock %}

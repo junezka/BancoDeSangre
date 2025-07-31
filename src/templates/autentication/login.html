@@ -3,41 +3,39 @@
 {% block title %}INICIO DE SESION{% endblock %}
 
 {% block content %}
-
-<div class="contenedor-pos">
-
-  <form class="centro" method="POST">
-
-    <h1>INICIO DE SESION</h1>  
-    
-      {% with messages = get_flashed_messages() %}
-      {% if messages %}
-        {%  for messages in messages%}
-        <div role="alert">
-          <strong>
-            {{messages}}
-          </strong>
-        </div>
-        {% endfor %}
-      {% endif %}
-    {% endwith %}
-<br>
-    
-    <div>
-      <label for="usuario">Usuario</label>
-      <input type="text" id="usuario" name="usuario" placeholder="Usuario"><br><br>
-    </div>
-    <div>
-      <label for="password">Contraseña</label>
-      <input type="password" name="password" placeholder="Contraseña"><br><br>
-    </div>
-    <br>
-    <div>
-    <button type="submit">
-      <a href="{{ url_for('registroUsuario') }}" style="text-decoration: none; color: black;">REGISTRARSE</a>
-    </button>
-    <button type="submit">INICIAR SESION</button>
-    </div>
-  </form>
+<div>
+    <form class="centro" method="POST">
+      <h1>BANCO MUNICIPAL DE SANGRE</h1>  
+      <h2>INICIO DE SESION</h2>
+      
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          {%  for messages in messages%}
+          <div role="alert">
+            <strong>
+              {{messages}}
+            </strong>
+          </div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+  <br>
+      
+      <div>
+        <label for="usuario">Usuario</label>
+        <input type="text" id="usuario" name="usuario" placeholder="Usuario"><br><br>
+      </div>
+      <div>
+        <label for="password">Contraseña</label>
+        <input type="password" name="password" placeholder="Contraseña"><br><br>
+      </div>
+      <br>
+      <div>
+      <button type="submit">
+        <a href="{{ url_for('registroUsuario') }}" style="text-decoration: none; color: black;">REGISTRARSE</a>
+      </button>
+      <button type="submit">INICIAR SESION</button>
+      </div>
+    </form>
 </div>
 {% endblock %}
